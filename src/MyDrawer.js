@@ -210,10 +210,17 @@ class MiniDrawer extends Component {
                             />
                         </div>
                         <div className={classes.grow}/>
-                        <Typography variant="h6" color="inherit" noWrap>
+                        <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                             Devices
                         </Typography>
                         <div className={classes.sectionDesktop}>
+                            <IconButton color="inherit">
+                                <Badge badgeContent={42} color="secondary">
+                                    <DevicesIcon/>
+                                </Badge>
+                            </IconButton>
+                        </div>
+                        <div className={classes.sectionMobile}>
                             <IconButton color="inherit">
                                 <Badge badgeContent={42} color="secondary">
                                     <DevicesIcon/>
