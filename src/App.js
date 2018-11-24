@@ -21,16 +21,22 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SearchIcon from '@material-ui/icons/Search';
 import PeopleIcon from '@material-ui/icons/People';
-import DevicesIcon from '@material-ui/icons/Devices';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import ScoreIcon from '@material-ui/icons/Score';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
+import HomeIcon from '@material-ui/icons/Home';
 import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 
+// react-router-dom
+import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
+
 // My components
-import MyDrawer from './MyDrawer';
+import SidebarExample from './SidebarExample';
+import Analytics from "./Analytics/Analytics";
+import Map from "./Map/Map";
+import Prediction from "./Prediction/Prediction";
+import Correlation from "./Correlation/Correlation";
 
 const drawerWidth = 240;
 
@@ -157,6 +163,33 @@ const styles = theme => ({
     },
 });
 
+const drawerList = {
+    analytics: {
+        icon: <PeopleIcon/>,
+        path: "/analytics",
+        text: "Analytics",
+        content: () => <Analytics/>,
+    },
+    map: {
+        icon: <PersonPinCircleIcon/>,
+        path: "/map",
+        text: "Map",
+        content: () => <Map/>,
+    },
+    correlation: {
+        icon: <ScoreIcon/>,
+        path: "/correlation",
+        text: "Correlation",
+        content: () => <Correlation/>,
+    },
+    prediction: {
+        icon: <AvTimerIcon/>,
+        path: "/prediction",
+        text: "Prediction",
+        content: () => <Prediction/>,
+    },
+};
+
 class App extends Component {
     state = {
         open: false,
@@ -169,113 +202,100 @@ class App extends Component {
     handleDrawerClose = () => {
         this.setState({open: false});
     };
+
     render() {
         const {classes, theme} = this.props;
 
-        const drawerListIcons = {
-            'Analytics': <PeopleIcon/>,
-            'Map': <PersonPinCircleIcon/>,
-            'Correlation': <ScoreIcon/>,
-            'Prediction': <AvTimerIcon/>
-        };
         return (
-            <div className={classes.root}>
-                <CssBaseline/>
-                <AppBar
-                    className={classNames(classes.appBar, {
-                        [classes.appBarShift]: this.state.open,
-                    })}
-                    // TODO: refactor next lines
-                    style={{paddingRight: this.state.open ? "0px" : "24px",}}
-                >
-                    <Toolbar disableGutters={!this.state.open}>
-                        <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={classNames(classes.menuButton, {
-                                [classes.hide]: this.state.open,
-                            })}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        <div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon/>
+            <Router>
+
+                <div className={classes.root}>
+                    <CssBaseline/>
+                    <AppBar
+                        className={classNames(classes.appBar, {
+                            [classes.appBarShift]: this.state.open,
+                        })}
+                        // TODO: refactor next lines
+                        style={{paddingRight: this.state.open ? "0px" : "24px",}}
+                    >
+                        <Toolbar disableGutters={!this.state.open}>
+                            <IconButton
+                                color="inherit"
+                                aria-label="Open drawer"
+                                onClick={this.handleDrawerOpen}
+                                className={classNames(classes.menuButton, {
+                                    [classes.hide]: this.state.open,
+                                })}
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                            <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon/>
+                                </div>
+                                <InputBase
+                                    placeholder="MAC address..."
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                />
                             </div>
-                            <InputBase
-                                placeholder="MAC address..."
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
-                            />
-                        </div>
-                        <div className={classes.grow}/>
-                        <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                            CCMN
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    className={classNames(classes.drawer, {
-                        [classes.drawerOpen]: this.state.open,
-                        [classes.drawerClose]: !this.state.open,
-                    })}
-                    classes={{
-                        paper: classNames({
+                            <div className={classes.grow}/>
+                            <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                                CCMN
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
+                    <Drawer
+                        variant="permanent"
+                        className={classNames(classes.drawer, {
                             [classes.drawerOpen]: this.state.open,
                             [classes.drawerClose]: !this.state.open,
-                        }),
-                    }}
-                    open={this.state.open}
-                >
-                    <div className={classes.toolbar}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
-                        </IconButton>
-                    </div>
-                    <Divider/>
-                    <List>
-                        {Object.keys(drawerListIcons).map((key) => (
-                            <ListItem button key={key}>
-                                <ListItemIcon>
-                                    {drawerListIcons[key]}
-                                </ListItemIcon>
-                                <ListItemText primary={key}/>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Drawer>
-                <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    <Typography paragraph>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent
-                        elementum facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in
-                        hendrerit gravida rutrum quisque non tellus. Convallis convallis tellus id interdum
-                        velit laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing.
-                        Amet nisl suscipit adipiscing bibendum est ultricies integer quis. Cursus euismod quis
-                        viverra nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum leo.
-                        Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus
-                        at augue. At augue eget arcu dictum varius duis at consectetur lorem. Velit sed
-                        ullamcorper morbi tincidunt. Lorem donec massa sapien faucibus et molestie ac.
-                    </Typography>
-                    <Typography paragraph>
-                        Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-                        facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-                        tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-                        consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus
-                        sed vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in.
-                        In hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-                        et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique
-                        sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo
-                        viverra maecenas accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-                        ultrices sagittis orci a.
-                    </Typography>
-                </main>
-            </div>
+                        })}
+                        classes={{
+                            paper: classNames({
+                                [classes.drawerOpen]: this.state.open,
+                                [classes.drawerClose]: !this.state.open,
+                            }),
+                        }}
+                        open={this.state.open}
+                    >
+                        <div className={classes.toolbar}>
+                            <IconButton onClick={this.handleDrawerClose}>
+                                {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                            </IconButton>
+                        </div>
+                        <Divider/>
+                        <List>
+                            {
+                                Object.keys(drawerList).map(key => (
+                                    <Link to={drawerList[key].path} style={{textDecoration: "none"}} key={key}>
+                                        <ListItem button key={key}>
+                                            <ListItemIcon>
+                                                {drawerList[key].icon}
+                                            </ListItemIcon>
+                                            <ListItemText primary={drawerList[key].text}/>
+                                        </ListItem>
+                                    </Link>
+                                ))
+                            }
+                        </List>
+                    </Drawer>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar}/>
+                        {
+                            Object.keys(drawerList).map(key => (
+                                <Route
+                                    key={key}
+                                    path={drawerList[key].path}
+                                    component={drawerList[key].content}
+                                />
+                            ))
+                        }
+                    </main>
+                </div>
+            </Router>
         );
     }
 }
