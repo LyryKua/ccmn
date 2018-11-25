@@ -24,15 +24,13 @@ import PeopleIcon from '@material-ui/icons/People';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import ScoreIcon from '@material-ui/icons/Score';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
-import HomeIcon from '@material-ui/icons/Home';
 import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 
 // react-router-dom
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 // My components
-import SidebarExample from './SidebarExample';
 import Analytics from "./Analytics/Analytics";
 import Map from "./Map/Map";
 import Prediction from "./Prediction/Prediction";
