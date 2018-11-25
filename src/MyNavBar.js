@@ -6,7 +6,6 @@ import Tabs from '@material-ui/core/Tabs';
 import NoSsr from '@material-ui/core/NoSsr';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
 
 function TabContainer(props) {
     return (
