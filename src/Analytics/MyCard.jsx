@@ -13,8 +13,10 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import PersonIcon from '@material-ui/icons/Person';
 
 const styles = theme => ({
-    icon: {
-        fontSize: "100px",
+    root: {
+        flexGrow: 1,
+        height: 150,
+        padding: theme.spacing.unit * 2,
     },
 });
 
@@ -22,18 +24,10 @@ class MyCard extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Paper className={classes.root}>
+            <Paper className={classes.root} style={{background: this.props.color}}>
                 <Grid container spacing={16}>
                     <Grid item>
-                        <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                        >
-                            <PersonIcon
-                                fontSize="large"
-                                className={classes.icon}
-                            />
-                        </IconButton>
+                        {this.props.icon}
                     </Grid>
                     <Grid item xs={12} sm container>
                         <Grid item xs container direction="column" spacing={16}>
@@ -42,11 +36,17 @@ class MyCard extends Component {
                                     variant="subtitle1"
                                     align="right"
                                 >
-                                    4242
+                                    {this.props.data}
                                 </Typography>
                             </Grid>
                             <Grid item xs>
-                                <Typography variant="h5" gutterBottom>Total Visitors</Typography>
+                                <Typography
+                                    variant="h5"
+                                    gutterBottom
+                                    align="right"
+                                >
+                                    {this.props.title}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Grid>
