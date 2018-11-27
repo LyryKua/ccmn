@@ -1,10 +1,10 @@
 // React JS
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 // material-ui
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -25,10 +25,10 @@ import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import ScoreIcon from '@material-ui/icons/Score';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
 import InputBase from '@material-ui/core/InputBase';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import {fade} from '@material-ui/core/styles/colorManipulator';
 
 // react-router-dom
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
 // My components
 import Analytics from "./Analytics/Analytics";
@@ -199,6 +199,12 @@ class App extends Component {
 
     handleDrawerClose = () => {
         this.setState({open: false});
+    };
+
+    handleChange = (event, value) => {
+        // this.setState({value});
+        console.log("e", event);
+        console.log("v", value);
     };
 
     render() {

@@ -1,18 +1,21 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import { DateRangePicker } from 'react-date-range';
+import {DateRangePicker} from 'react-date-range';
 import MyCard from './MyCard';
 import Paper from '@material-ui/core/Paper';
 import PersonIcon from '@material-ui/icons/Person';
 import PollIcon from '@material-ui/icons/Poll';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import ColumnGraph from './ColumnGraph';
-import CircleGraph from './CircleGraph';
+import Typography from '@material-ui/core/Typography';
+import BarGraph from './BarGraph';
+import PieGraph from './PieGraph';
+import LineGraph from './LineGraph';
 
+import * as loremData from './loremData';
 
 const styles = theme => ({
     root: {
@@ -54,6 +57,7 @@ class Analytics extends Component {
     }
 
     render() {
+        console.log(loremData);
         const {classes} = this.props;
 
         return (
@@ -86,7 +90,7 @@ class Analytics extends Component {
                         />}
                         data={4242}
                         title="Total Visitors"
-                        color="#4caf50"
+                        color="#6fbf73"
                     />
                 </Grid>
                 <Grid item xs={3}>
@@ -97,7 +101,7 @@ class Analytics extends Component {
                         />}
                         data="42 mins"
                         title="Average Dwell Time"
-                        color="#e91e63"
+                        color="#ed4b82"
                     />
                 </Grid>
                 <Grid item xs={3}>
@@ -108,7 +112,7 @@ class Analytics extends Component {
                         />}
                         data="3pm - 4pm"
                         title="Peak Hour"
-                        color="#2196f3"
+                        color="#4dabf5"
                     />
                 </Grid>
                 <Grid item xs={3}>
@@ -119,20 +123,62 @@ class Analytics extends Component {
                         />}
                         data="42 %"
                         title="Conversion Rate"
-                        color="#ffc107"
+                        color="#ffcd38"
                     />
                 </Grid>
-                <Grid item xs={8}>
-                    <ColumnGraph/>
-                </Grid>
-                <Grid item xs={4}>
-                    <CircleGraph/>
-                </Grid>
                 <Grid item xs={7}>
-                    <ColumnGraph/>
+                    <Typography variant="h6" gutterBottom>
+                        Proximity
+                    </Typography>
+                    <BarGraph
+                        datasets={loremData.barProximityDatasets}
+                        labels={loremData.barProximityLabels}
+                    />
                 </Grid>
                 <Grid item xs={5}>
-                    <CircleGraph/>
+                    <Typography variant="h6" gutterBottom>
+                        Proximity Distribution
+                    </Typography>
+                    <PieGraph
+                        datasets={loremData.pieProximityDatasets}
+                        labels={loremData.pieProximityLabels}
+                    />
+                </Grid>
+                <Grid item xs={7}>
+                    <Typography variant="h6" gutterBottom>
+                        Dwell Time
+                    </Typography>
+                    <LineGraph
+                        datasets={loremData.lineDwellTimeDatasets}
+                        labels={loremData.lineDwellTimeLabels}
+                    />
+                </Grid>
+                <Grid item xs={5}>
+                    <Typography variant="h6" gutterBottom>
+                        Dwell Time Distribution
+                    </Typography>
+                    <PieGraph
+                        datasets={loremData.pieDwellTimeDatasets}
+                        labels={loremData.pieDwellTimeLabels}
+                    />
+                </Grid>
+                <Grid item xs={7}>
+                    <Typography variant="h6" gutterBottom>
+                        Repeat Visitors
+                    </Typography>
+                    <LineGraph
+                        datasets={loremData.lineRepeatVisitorsDatasets}
+                        labels={loremData.lineRepeatVisitorsLabels}
+                    />
+                </Grid>
+                <Grid item xs={5}>
+                    <Typography variant="h6" gutterBottom>
+                        Repeat Visitors Distribution
+                    </Typography>
+                    <PieGraph
+                        datasets={loremData.pieRepeatVisitorsDatasets}
+                        labels={loremData.pieRepeatVisitorsLabels}
+                    />
                 </Grid>
             </Grid>
         );
