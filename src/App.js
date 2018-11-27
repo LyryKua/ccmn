@@ -201,12 +201,6 @@ class App extends Component {
         this.setState({open: false});
     };
 
-    handleChange = (event, value) => {
-        // this.setState({value});
-        console.log("e", event);
-        console.log("v", value);
-    };
-
     render() {
         const {classes, theme} = this.props;
 

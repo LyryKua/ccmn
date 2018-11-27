@@ -47,7 +47,6 @@ class Analytics extends Component {
     }
 
     handleRangeChange(which, payload) {
-        console.log(which, payload);
         this.setState({
             [which]: {
                 ...this.state[which],
@@ -57,7 +56,6 @@ class Analytics extends Component {
     }
 
     render() {
-        console.log(loremData);
         const {classes} = this.props;
 
         return (
