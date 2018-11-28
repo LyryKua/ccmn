@@ -8,7 +8,6 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
-import red from '@material-ui/core/colors/red';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeviceDialog from './DeviceDialog';
 
@@ -33,15 +32,13 @@ const styles = theme => ({
     expandOpen: {
         transform: 'rotate(180deg)',
     },
-    avatar: {
-        backgroundColor: red[500],
-    },
 });
 
 
 class Cluster extends Component {
     state = {
-        expanded: true,
+        expanded: false,
+        openDialog: false,
     };
 
     handleExpandClick = () => {

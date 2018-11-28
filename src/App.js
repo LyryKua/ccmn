@@ -161,6 +161,7 @@ const styles = theme => ({
     },
 });
 
+
 const drawerList = {
     analytics: {
         icon: <PeopleIcon/>,
@@ -206,7 +207,6 @@ class App extends Component {
 
         return (
             <Router>
-
                 <div className={classes.root}>
                     <CssBaseline/>
                     <AppBar

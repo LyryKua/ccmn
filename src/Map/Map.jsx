@@ -6,6 +6,8 @@ import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Cluster from './Cluster';
+import DeviceSnackbar from './DeviceSnackbar';
+import {SnackbarProvider} from 'notistack';
 
 function TabContainer(props) {
     return (
@@ -53,18 +55,23 @@ class Map extends Component {
                         <Tab label="E2"/>
                         <Tab label="E3"/>
                     </Tabs>
-                    {value === 0 && <TabContainer>
-                        <Cluster
-                            e={1}
-                        />
-                    </TabContainer>}
-                    {value === 1 && <TabContainer>
-                        <Cluster
-                            e={2}
-                        />
-                    </TabContainer>}
+                    {value === 0 && <TabContainer><Cluster e={1}/></TabContainer>}
+                    {value === 1 && <TabContainer><Cluster e={2}/></TabContainer>}
                     {value === 2 && <TabContainer><Cluster e={3}/></TabContainer>}
                 </Paper>
+                {/*TODO: Delete next rows*/}
+                <SnackbarProvider
+                    maxSnack={5}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    style={{
+                        opacity: 0.8,
+                    }}
+                >
+                    <DeviceSnackbar/>
+                </SnackbarProvider>
             </div>
         );
     }

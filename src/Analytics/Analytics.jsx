@@ -11,9 +11,9 @@ import PollIcon from '@material-ui/icons/Poll';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import Typography from '@material-ui/core/Typography';
-import BarGraph from './BarGraph';
-import PieGraph from './PieGraph';
-import LineGraph from './LineGraph';
+import BarGraph from '../Graphs/BarGraph';
+import PieGraph from '../Graphs/PieGraph';
+import LineGraph from '../Graphs/LineGraph';
 
 import * as loremData from './loremData';
 
@@ -21,11 +21,11 @@ const styles = theme => ({
     root: {
         flexGrow: 1,
     },
-    grid: {
-        align: 'center',
-    },
     icon: {
         fontSize: "90px",
+    },
+    paper: {
+        textAlign: 'center'
     },
 });
 
@@ -47,6 +47,8 @@ class Analytics extends Component {
     }
 
     handleRangeChange(which, payload) {
+        // DO NOT DELETE NEXT ROW
+        console.log(which, payload);
         this.setState({
             [which]: {
                 ...this.state[which],
@@ -66,8 +68,8 @@ class Analytics extends Component {
                 alignItems="center"
                 spacing={32}
             >
-                <Grid item xs={12} className={classes.grid}>
-                    <Paper style={{textAlign: 'center'}}>
+                <Grid item xs={12}>
+                    <Paper className={classes.paper}>
                         <DateRangePicker
                             onChange={this.handleRangeChange.bind(this, 'dateRangePicker')}
                             showSelectionPreview={true}

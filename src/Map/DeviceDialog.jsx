@@ -69,6 +69,7 @@ class SimpleDialog extends React.Component {
                 fullWidth={true}
                 maxWidth="md"
                 {...other}
+                onClick={() => this.handleListItemClick()}
             >
                 <DialogTitle id="dialog-title" disableTypography={true}>
                     <Typography variant="h2">
@@ -76,7 +77,7 @@ class SimpleDialog extends React.Component {
                     </Typography>
                 </DialogTitle>
                 <div>
-                    <List onClick={() => this.handleListItemClick()}>
+                    <List>
                         {
                             Object.keys(loremData).map((key, index) => (
                                 <ListItem
