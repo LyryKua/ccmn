@@ -25,6 +25,7 @@ import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import ScoreIcon from '@material-ui/icons/Score';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
 import InputBase from '@material-ui/core/InputBase';
+import Button from '@material-ui/core/Button';
 import {fade} from '@material-ui/core/styles/colorManipulator';
 
 // react-router-dom
@@ -159,13 +160,16 @@ const styles = theme => ({
             display: 'none',
         },
     },
+    button: {
+        margin: theme.spacing.unit,
+    },
 });
 
 
 const drawerList = {
     analytics: {
         icon: <PeopleIcon/>,
-        path: "/analytics",
+        path: "/analytics" || "/",
         text: "Analytics",
         content: () => <Analytics/>,
     },
@@ -240,9 +244,11 @@ class App extends Component {
                                 />
                             </div>
                             <div className={classes.grow}/>
-                            <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                                CCMN
-                            </Typography>
+                            <Button href="/" className={classes.button} color='inherit'>
+                                <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                                    CCMN
+                                </Typography>
+                            </Button>
                         </Toolbar>
                     </AppBar>
                     <Drawer

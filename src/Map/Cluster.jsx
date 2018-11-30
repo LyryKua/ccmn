@@ -24,7 +24,6 @@ const styles = theme => ({
         transition: theme.transitions.create('transform', {
             duration: theme.transitions.duration.shortest,
         }),
-        marginLeft: 'auto',
         [theme.breakpoints.up('sm')]: {
             marginRight: -8,
         },
@@ -49,7 +48,7 @@ class Cluster extends Component {
         const {classes} = this.props;
 
         return (
-            <Card className={classes.card}>
+            <div className={classes.card}>
                 <CardMedia
                     className={classes.media}
                     image={"/e" + this.props.e + ".jpeg"}
@@ -72,7 +71,7 @@ class Cluster extends Component {
                         <DeviceDialog/>
                     </CardContent>
                 </Collapse>
-            </Card>
+            </div>
         )
     }
 }

@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import {withStyles} from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 import {withSnackbar} from 'notistack';
+
 
 const styles = {
     root: {
@@ -23,27 +21,22 @@ const buttons = [
 
 
 class DeviceSnackbar extends Component {
-    handleClick = button => () => {
-        // Avoid material-ui warnings. more info: https://material-ui.com/style/typography/#migration-to-typography-v2
-        window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
-        this.props.enqueueSnackbar(button.message, {variant: button.variant, backgroundColor: button.color});
-    };
+    componentDidMount() {
+        buttons.map(button => (
+            setInterval(
+                () => {
+                    window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
+                    this.props.enqueueSnackbar(button.message, {variant: button.variant});
+                },
+                1000
+            )
+        ))
+
+    }
 
     render() {
-        const {classes} = this.props;
         return (
-            <Paper className={classes.root}>
-                {buttons.map(button => (
-                    <Button
-                        key={button.variant}
-                        variant="contained"
-                        className={classNames(classes.button, classes[button.variant])}
-                        onClick={this.handleClick(button)}
-                    >
-                        {button.variant}
-                    </Button>
-                ))}
-            </Paper>
+            null
         );
     }
 }

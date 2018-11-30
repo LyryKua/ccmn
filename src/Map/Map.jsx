@@ -8,6 +8,9 @@ import Typography from '@material-ui/core/Typography';
 import Cluster from './Cluster';
 import DeviceSnackbar from './DeviceSnackbar';
 import {SnackbarProvider} from 'notistack';
+import Card from "@material-ui/core/Card/Card";
+import DeviceDialog from "./DeviceDialog";
+
 
 function TabContainer(props) {
     return (
@@ -43,7 +46,7 @@ class Map extends Component {
 
         return (
             <div className={classes.root}>
-                <Paper className={classes.root}>
+                <Card className={classes.card}>
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}
@@ -58,7 +61,7 @@ class Map extends Component {
                     {value === 0 && <TabContainer><Cluster e={1}/></TabContainer>}
                     {value === 1 && <TabContainer><Cluster e={2}/></TabContainer>}
                     {value === 2 && <TabContainer><Cluster e={3}/></TabContainer>}
-                </Paper>
+                </Card>
                 {/*TODO: Delete next rows*/}
                 <SnackbarProvider
                     maxSnack={5}
