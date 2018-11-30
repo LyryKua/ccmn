@@ -19,19 +19,33 @@ const buttons = [
     {variant: 'error', message: '42:42:42:42:42:42 is disconnected', color: 'rgb(237, 75, 130)'},
 ];
 
+let timerID = {
+    success: null,
+    error: null,
+};
+
 
 class DeviceSnackbar extends Component {
-    componentDidMount() {
-        buttons.map(button => (
-            setInterval(
-                () => {
-                    window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
-                    this.props.enqueueSnackbar(button.message, {variant: button.variant});
-                },
-                1000
-            )
-        ))
+    componentWillUnmount() {
+        clearInterval(timerID.success);
+        clearInterval(timerID.error);
+    }
 
+    componentDidMount() {
+        timerID.success = setInterval(
+            () => {
+                window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
+                this.props.enqueueSnackbar(buttons[0].message, {variant: buttons[0].variant});
+            },
+            1000
+        );
+        timerID.error = setInterval(
+            () => {
+                window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
+                this.props.enqueueSnackbar(buttons[1].message, {variant: buttons[1].variant});
+            },
+            1000
+        )
     }
 
     render() {
