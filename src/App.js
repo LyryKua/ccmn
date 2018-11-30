@@ -29,7 +29,7 @@ import Button from '@material-ui/core/Button';
 import {fade} from '@material-ui/core/styles/colorManipulator';
 
 // react-router-dom
-import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
 
 // My components
 import Analytics from "./Analytics/Analytics";
@@ -169,7 +169,7 @@ const styles = theme => ({
 const drawerList = {
     analytics: {
         icon: <PeopleIcon/>,
-        path: "/analytics" || "/",
+        path: "/analytics",
         text: "Analytics",
         content: () => <Analytics/>,
     },
@@ -288,6 +288,9 @@ class App extends Component {
                     </Drawer>
                     <main className={classes.content}>
                         <div className={classes.toolbar}/>
+                        <Route exact path="/" render={() => (
+                            <Redirect to="/analytics"/>
+                        )}/>
                         {
                             Object.keys(drawerList).map(key => (
                                 <Route
