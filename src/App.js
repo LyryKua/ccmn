@@ -36,6 +36,10 @@ import Analytics from "./Analytics/Analytics";
 import Map from "./Map/Map";
 import Prediction from "./Prediction/Prediction";
 import Correlation from "./Correlation/Correlation";
+import {axiosTest, axiosTest2} from './api/tmp';
+import {credentials} from "./api/credentials";
+import {sitesAPI} from "./api/endpoints";
+import {HTTPPRESENCE, HTTPLOCATE} from './api/http';
 
 const drawerWidth = 240;
 
@@ -209,6 +213,8 @@ class App extends Component {
     render() {
         const {classes, theme} = this.props;
 
+        axiosTest(sitesAPI);
+        axiosTest2(sitesAPI);
         return (
             <Router>
                 <div className={classes.root}>

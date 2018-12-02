@@ -16,6 +16,7 @@ import PieGraph from '../Graphs/PieGraph';
 import LineGraph from '../Graphs/LineGraph';
 
 import * as loremData from './loremData';
+import {getTotalVisitors} from "../api/getters";
 
 const styles = theme => ({
     root: {
@@ -88,7 +89,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data={4242}
+                        data={getTotalVisitors()}
                         title="Total Visitors"
                         color="#6fbf73"
                     />

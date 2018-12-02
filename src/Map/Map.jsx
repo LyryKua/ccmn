@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Paper from '@material-ui/core/Paper';
+import Badge from '@material-ui/core/Badge';
 import Typography from '@material-ui/core/Typography';
 import Cluster from './Cluster';
 import DeviceSnackbar from './DeviceSnackbar';
 import {SnackbarProvider} from 'notistack';
 import Card from "@material-ui/core/Card/Card";
-import DeviceDialog from "./DeviceDialog";
 
 
 function TabContainer(props) {
@@ -28,6 +27,9 @@ const styles = theme => ({
     root: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
+    },
+    padding: {
+        padding: `0 ${theme.spacing.unit * 2}px`,
     },
 });
 
@@ -54,9 +56,21 @@ class Map extends Component {
                         textColor="primary"
                         centered
                     >
-                        <Tab label="E1"/>
-                        <Tab label="E2"/>
-                        <Tab label="E3"/>
+                        <Tab label={
+                            <Badge className={classes.padding} color='primary' badgeContent={42}>
+                                E1
+                            </Badge>
+                        }/>
+                        <Tab label={
+                            <Badge className={classes.padding} color='primary' badgeContent={42}>
+                                E2
+                            </Badge>
+                        }/>
+                        <Tab label={
+                            <Badge className={classes.padding} color='primary' badgeContent={42}>
+                                E3
+                            </Badge>
+                        }/>
                     </Tabs>
                     {value === 0 && <TabContainer><Cluster e={1}/></TabContainer>}
                     {value === 1 && <TabContainer><Cluster e={2}/></TabContainer>}
