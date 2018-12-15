@@ -16,7 +16,8 @@ import PieGraph from '../Graphs/PieGraph';
 import LineGraph from '../Graphs/LineGraph';
 
 import * as loremData from './loremData';
-import {getTotalVisitors} from "../api/getters";
+import {getSiteID, getTotalVisitors} from "../api/getters";
+import {HTTPPRESENCE} from "../api/http";
 
 const styles = theme => ({
     root: {
@@ -58,9 +59,50 @@ class Analytics extends Component {
         });
     }
 
+    // componentWillReceiveProps(nextProps) {
+    //     console.log("componentWillReceiveProps");
+    //     console.log(nextProps);
+    // }
+    //
+    // shouldComponentUpdate(nextProps, nextState) {
+        // console.log("shouldComponentUpdate");
+        // console.log(nextProps, nextState);
+        // console.log(this.props);
+        // return this.props.siteId === nextProps.siteId;
+    // }
+    //
+    // componentWillUpdate(nextProps, nextState) {
+    //     console.log("componentWillUpdate");
+    //     console.log(nextProps, nextState);
+    // }
+    //
+    // componentWillMount() {
+    //     console.log("componentWillMount");
+    //     // console.log(this.props);
+    // }
+    //
+    // componentWillReceiveProps(nextProps) {
+    //     // This will erase any local state updates!
+    //     // Do not do this.
+    //     this.setState({ email: nextProps.email });
+    // }
+    componentWillReceiveProps(nextProps) {
+        console.log("componentDidMount");
+
+        if (nextProps.siteId !== this.state.siteId) {
+            const {siteId} = this.props;
+            let self = this;
+            HTTPPRESENCE.get("/api/presence/v1/visitor/count/today", {params: {siteId: siteId}})
+                .then(response => {
+                    self.setState({totalVisitors: response.data})
+                });
+        }
+    }
+
     render() {
         const {classes} = this.props;
 
+        console.log(React.version);
         return (
             <Grid
                 container
@@ -89,7 +131,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data={getTotalVisitors()}
+                        data={this.state.totalVisitors}
                         title="Total Visitors"
                         color="#6fbf73"
                     />

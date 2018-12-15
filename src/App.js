@@ -40,6 +40,7 @@ import {axiosTest, axiosTest2} from './api/tmp';
 import {credentials} from "./api/credentials";
 import {sitesAPI} from "./api/endpoints";
 import {HTTPPRESENCE, HTTPLOCATE} from './api/http';
+import {getSiteID} from "./api/getters";
 
 const drawerWidth = 240;
 
@@ -169,38 +170,43 @@ const styles = theme => ({
     },
 });
 
-
-const drawerList = {
-    analytics: {
+const drawerList = [
+    {
         icon: <PeopleIcon/>,
         path: "/analytics",
         text: "Analytics",
         content: () => <Analytics/>,
     },
-    map: {
+    {
         icon: <PersonPinCircleIcon/>,
         path: "/map",
         text: "Map",
         content: () => <Map/>,
     },
-    correlation: {
+    {
         icon: <ScoreIcon/>,
         path: "/correlation",
         text: "Correlation",
         content: () => <Correlation/>,
     },
-    prediction: {
+    {
         icon: <AvTimerIcon/>,
         path: "/prediction",
         text: "Prediction",
         content: () => <Prediction/>,
     },
-};
+];
+
 
 class App extends Component {
-    state = {
-        open: false,
-    };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            siteId: 0,
+        };
+    }
 
     handleDrawerOpen = () => {
         this.setState({open: true});
@@ -210,11 +216,21 @@ class App extends Component {
         this.setState({open: false});
     };
 
+    componentDidMount(){
+        console.log("Updated siteId");
+        const self = this;
+        HTTPPRESENCE.get("/api/config/v1/sites/")
+            .then(response => {
+                self.setState({
+                    siteId: response.data[0].aesUId,
+                });
+            });
+    }
+
     render() {
         const {classes, theme} = this.props;
 
-        axiosTest(sitesAPI);
-        axiosTest2(sitesAPI);
+        console.log("Render <App/>");
         return (
             <Router>
                 <div className={classes.root}>
@@ -279,13 +295,13 @@ class App extends Component {
                         <Divider/>
                         <List>
                             {
-                                Object.keys(drawerList).map(key => (
-                                    <Link to={drawerList[key].path} style={{textDecoration: "none"}} key={key}>
-                                        <ListItem button key={key}>
+                                drawerList.map(item => (
+                                    <Link to={item.path} style={{textDecoration: "none"}} key={item.text}>
+                                        <ListItem button key={item.text}>
                                             <ListItemIcon>
-                                                {drawerList[key].icon}
+                                                {item.icon}
                                             </ListItemIcon>
-                                            <ListItemText primary={drawerList[key].text}/>
+                                            <ListItemText primary={item.text}/>
                                         </ListItem>
                                     </Link>
                                 ))
@@ -297,15 +313,22 @@ class App extends Component {
                         <Route exact path="/" render={() => (
                             <Redirect to="/analytics"/>
                         )}/>
-                        {
-                            Object.keys(drawerList).map(key => (
-                                <Route
-                                    key={key}
-                                    path={drawerList[key].path}
-                                    component={drawerList[key].content}
-                                />
-                            ))
-                        }
+                        <Route
+                            path={"/analytics"}
+                            render={() => <Analytics siteId={this.state.siteId}/>}
+                        />
+                        <Route
+                            path={"/map"}
+                            render={() => <Map siteId={this.state.siteId}/>}
+                        />
+                        <Route
+                            path={"/correlation"}
+                            render={() => <Correlation siteId={this.state.siteId}/>}
+                        />
+                        <Route
+                            path={"/prediction"}
+                            render={() => <Prediction siteId={this.state.siteId}/>}
+                        />
                     </main>
                 </div>
             </Router>
