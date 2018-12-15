@@ -65,10 +65,10 @@ class Analytics extends Component {
     // }
     //
     // shouldComponentUpdate(nextProps, nextState) {
-        // console.log("shouldComponentUpdate");
-        // console.log(nextProps, nextState);
-        // console.log(this.props);
-        // return this.props.siteId === nextProps.siteId;
+    // console.log("shouldComponentUpdate");
+    // console.log(nextProps, nextState);
+    // console.log(this.props);
+    // return this.props.siteId === nextProps.siteId;
     // }
     //
     // componentWillUpdate(nextProps, nextState) {
@@ -86,15 +86,12 @@ class Analytics extends Component {
     //     // Do not do this.
     //     this.setState({ email: nextProps.email });
     // }
-    componentWillReceiveProps(nextProps) {
-        console.log("componentDidMount");
-
-        if (nextProps.siteId !== this.state.siteId) {
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.siteId !== this.props.siteId) {
             const {siteId} = this.props;
-            let self = this;
             HTTPPRESENCE.get("/api/presence/v1/visitor/count/today", {params: {siteId: siteId}})
                 .then(response => {
-                    self.setState({totalVisitors: response.data})
+                    this.setState({totalVisitors: response.data})
                 });
         }
     }
