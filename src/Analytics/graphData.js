@@ -49,9 +49,9 @@ export const pieProximityDatasets = [{
     hoverBackgroundColor: proximityHoverBackgroundColor,
 }];
 
-//
-//-----second data------------------------------------------------------------------------------------------------------
-//
+/*
+ * ----- Dwell Time / Dwell Time Distribution --------------------------------------------------------------------------
+ */
 
 const lineDwellTimeArr = () => Array.from({length: 16}, () => Math.floor(Math.random() * 15 + 5));
 const pieDwellTimeArr = () => Array.from({length: 5}, () => Math.floor(Math.random() * 15 + 5));

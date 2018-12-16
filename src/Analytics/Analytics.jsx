@@ -15,9 +15,11 @@ import BarGraph from '../Graphs/BarGraph';
 import PieGraph from '../Graphs/PieGraph';
 import LineGraph from '../Graphs/LineGraph';
 
-import * as loremData from './loremData';
+// TODO: replace *
+import * as graphData from './graphData';
 import {getSiteID, getTotalVisitors} from "../api/getters";
 import {HTTPPRESENCE} from "../api/http";
+import {pieDwellTimeDatasets_func} from "./graphData";
 
 const styles = theme => ({
     root: {
@@ -59,47 +61,36 @@ class Analytics extends Component {
         });
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //     console.log("componentWillReceiveProps");
-    //     console.log(nextProps);
-    // }
-    //
-    // shouldComponentUpdate(nextProps, nextState) {
-    // console.log("shouldComponentUpdate");
-    // console.log(nextProps, nextState);
-    // console.log(this.props);
-    // return this.props.siteId === nextProps.siteId;
-    // }
-    //
-    // componentWillUpdate(nextProps, nextState) {
-    //     console.log("componentWillUpdate");
-    //     console.log(nextProps, nextState);
-    // }
-    //
-    // componentWillMount() {
-    //     console.log("componentWillMount");
-    //     // console.log(this.props);
-    // }
-    //
-    // componentWillReceiveProps(nextProps) {
-    //     // This will erase any local state updates!
-    //     // Do not do this.
-    //     this.setState({ email: nextProps.email });
-    // }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.siteId !== this.props.siteId) {
             const {siteId} = this.props;
-            HTTPPRESENCE.get("/api/presence/v1/visitor/count/today", {params: {siteId: siteId}})
+            HTTPPRESENCE.get("/api/presence/v1/kpisummary/today", {params: {siteId: siteId}})
                 .then(response => {
-                    this.setState({totalVisitors: response.data})
+                    console.log(response.data);
+                    this.setState({
+                        averageDwell: response.data.averageDwell,
+                        totalVisitorCount: response.data.totalVisitorCount,
+                        peakHour: response.data.peakSummary.peakHour,
+                        conversionRate: response.data.conversionRate,
+                        // averageDwellByLevels: response.data.averageDwellByLevels,
+                    })
                 });
         }
     }
 
     render() {
         const {classes} = this.props;
+        const {
+            averageDwell,
+            totalVisitorCount,
+            peakHour,
+            conversionRate,
+            // averageDwellByLevels,
+        } = this.state;
 
-        console.log(React.version);
+        // const data1 = graphData.pieDwellTimeDatasets_func(averageDwellByLevels);
+        console.log("now", graphData.pieDwellTimeDatasets);
+        // console.log("todo", data1);
         return (
             <Grid
                 container
@@ -128,7 +119,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data={this.state.totalVisitors}
+                        data={totalVisitorCount}
                         title="Total Visitors"
                         color="#6fbf73"
                     />
@@ -139,7 +130,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data="42 mins"
+                        data={`${Math.round(averageDwell)} min(s)`}
                         title="Average Dwell Time"
                         color="#ed4b82"
                     />
@@ -150,7 +141,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data="3pm - 4pm"
+                        data={`${peakHour}:00 - ${peakHour + 1}:00`}
                         title="Peak Hour"
                         color="#4dabf5"
                     />
@@ -161,7 +152,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data="42 %"
+                        data={`${conversionRate}%`}
                         title="Conversion Rate"
                         color="#ffcd38"
                     />
@@ -171,8 +162,8 @@ class Analytics extends Component {
                         Proximity
                     </Typography>
                     <BarGraph
-                        datasets={loremData.barProximityDatasets}
-                        labels={loremData.barProximityLabels}
+                        datasets={graphData.barProximityDatasets}
+                        labels={graphData.barProximityLabels}
                     />
                 </Grid>
                 <Grid item xs={5}>
@@ -180,8 +171,8 @@ class Analytics extends Component {
                         Proximity Distribution
                     </Typography>
                     <PieGraph
-                        datasets={loremData.pieProximityDatasets}
-                        labels={loremData.pieProximityLabels}
+                        datasets={graphData.pieProximityDatasets}
+                        labels={graphData.pieProximityLabels}
                     />
                 </Grid>
                 <Grid item xs={7}>
@@ -189,8 +180,8 @@ class Analytics extends Component {
                         Dwell Time
                     </Typography>
                     <LineGraph
-                        datasets={loremData.lineDwellTimeDatasets}
-                        labels={loremData.lineDwellTimeLabels}
+                        datasets={graphData.lineDwellTimeDatasets}
+                        labels={graphData.lineDwellTimeLabels}
                     />
                 </Grid>
                 <Grid item xs={5}>
@@ -198,8 +189,8 @@ class Analytics extends Component {
                         Dwell Time Distribution
                     </Typography>
                     <PieGraph
-                        datasets={loremData.pieDwellTimeDatasets}
-                        labels={loremData.pieDwellTimeLabels}
+                        datasets={graphData.pieDwellTimeDatasets}
+                        labels={graphData.pieDwellTimeLabels}
                     />
                 </Grid>
                 <Grid item xs={7}>
@@ -207,8 +198,8 @@ class Analytics extends Component {
                         Repeat Visitors
                     </Typography>
                     <LineGraph
-                        datasets={loremData.lineRepeatVisitorsDatasets}
-                        labels={loremData.lineRepeatVisitorsLabels}
+                        datasets={graphData.lineRepeatVisitorsDatasets}
+                        labels={graphData.lineRepeatVisitorsLabels}
                     />
                 </Grid>
                 <Grid item xs={5}>
@@ -216,8 +207,8 @@ class Analytics extends Component {
                         Repeat Visitors Distribution
                     </Typography>
                     <PieGraph
-                        datasets={loremData.pieRepeatVisitorsDatasets}
-                        labels={loremData.pieRepeatVisitorsLabels}
+                        datasets={graphData.pieRepeatVisitorsDatasets}
+                        labels={graphData.pieRepeatVisitorsLabels}
                     />
                 </Grid>
             </Grid>

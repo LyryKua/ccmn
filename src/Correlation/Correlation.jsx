@@ -8,7 +8,7 @@ import BarGraph from '../Graphs/BarGraph';
 import PieGraph from '../Graphs/PieGraph';
 import LineGraph from '../Graphs/LineGraph';
 
-import * as loremData from '../Analytics/loremData';
+import * as loremData from '../Analytics/graphData';
 
 const styles = theme => ({
     root: {

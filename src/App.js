@@ -217,7 +217,6 @@ class App extends Component {
     };
 
     componentDidMount(){
-        console.log("Updated siteId");
         const self = this;
         HTTPPRESENCE.get("/api/config/v1/sites/")
             .then(response => {
@@ -230,7 +229,6 @@ class App extends Component {
     render() {
         const {classes, theme} = this.props;
 
-        console.log("Render <App/>");
         return (
             <Router>
                 <div className={classes.root}>

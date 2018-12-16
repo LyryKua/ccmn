@@ -8,7 +8,7 @@ import LineGraph from '../Graphs/LineGraph';
 import {addDays} from 'date-fns';
 
 import {Calendar} from 'react-date-range';
-import * as loremData from "../Analytics/loremData";
+import * as loremData from "../Analytics/graphData";
 
 
 const styles = theme => ({
