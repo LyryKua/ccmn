@@ -1,11 +1,6 @@
-//
-//-----first data-------------------------------------------------------------------------------------------------------
-//
-
-
-const barProximityArr = () => Array.from({length: 16}, () => Math.floor(Math.random() * 15 + 5));
-const pieProximityArr = () => Array.from({length: 3}, () => Math.floor(Math.random() * 15 + 5));
-
+/*
+ * ----- Proximity / Proximity Distribution ----------------------------------------------------------------------------
+ */
 
 const proximityBackgroundColor = ['rgba(76, 175, 80, 0.2)', 'rgba(233, 30, 99, 0.2)', 'rgba(33, 150, 243, 0.2)'];
 const proximityBorderColor = ['#6fbf73', '#ed4b82', '#4dabf5'];
@@ -30,19 +25,53 @@ export const barProximityLabels = [
     '1pm-2pm',
     '2pm-3pm',
     '3pm-4pm',
+    '4pm-5pm',
+    '5pm-6pm',
+    '6pm-7pm',
+    '7pm-8pm',
+    '8pm-9pm',
+    '9pm-10pm',
+    '10pm-11pm',
+    '11pm-12am',
 ];
-export const barProximityDatasets = Array.from({length: 3}, (v, index) => ({
-    data: barProximityArr(),
-    label: barProximityLabel[index % 3],
-    backgroundColor: proximityBackgroundColor[index % 3],
-    borderColor: proximityBorderColor[index % 3],
-    borderWidth: 1,
-    hoverBackgroundColor: proximityHoverBackgroundColor[index % 3],
-}));
+export const barProximityDatasets = (passerby, visitor, connected) => {
+    let data = [
+        {
+            data: [],
+            label: barProximityLabel[0],
+            backgroundColor: proximityBackgroundColor[0],
+            borderColor: proximityBorderColor[0],
+            borderWidth: 1,
+            hoverBackgroundColor: proximityHoverBackgroundColor[0],
+        },
+        {
+            data: [],
+            label: barProximityLabel[1],
+            backgroundColor: proximityBackgroundColor[1],
+            borderColor: proximityBorderColor[1],
+            borderWidth: 1,
+            hoverBackgroundColor: proximityHoverBackgroundColor[1],
+        },
+        {
+            data: [],
+            label: barProximityLabel[2],
+            backgroundColor: proximityBackgroundColor[2],
+            borderColor: proximityBorderColor[2],
+            borderWidth: 1,
+            hoverBackgroundColor: proximityHoverBackgroundColor[2],
+        },
+    ];
+    if (passerby && visitor && connected) {
+            data[0].data = Object.values(passerby);
+            data[1].data = Object.values(visitor);
+            data[2].data = Object.values(connected);
+    }
+    return data;
+};
 
 export const pieProximityLabels = barProximityLabel;
-export const pieProximityDatasets = [{
-    data: pieProximityArr(),
+export const pieProximityDatasets = (totalPasserbyCount, totalVisitorCount, totalConnectedCount) => [{
+    data: [totalPasserbyCount, totalVisitorCount, totalConnectedCount],
     backgroundColor: proximityBackgroundColor,
     borderColor: proximityBorderColor,
     borderWidth: 1,
@@ -52,10 +81,6 @@ export const pieProximityDatasets = [{
 /*
  * ----- Dwell Time / Dwell Time Distribution --------------------------------------------------------------------------
  */
-
-const lineDwellTimeArr = () => Array.from({length: 16}, () => Math.floor(Math.random() * 15 + 5));
-const pieDwellTimeArr = () => Array.from({length: 5}, () => Math.floor(Math.random() * 15 + 5));
-
 
 const dwellTimeBackgroundColor = ['rgba(76, 175, 80, 0.2)', 'rgba(233, 30, 99, 0.2)', 'rgba(33, 150, 243, 0.2)', 'rgba(255, 193, 7, 0.2)', 'rgba(101, 115, 195, 0.2)',];
 const dwellTimeBorderColor = ['#6fbf73', '#ed4b82', '#4dabf5', '#ffcd38', '#6573c3',];
@@ -68,34 +93,79 @@ const lineDwellTimeLabel = [
     '8+ hours',
 ];
 export const lineDwellTimeLabels = barProximityLabels;
-export const lineDwellTimeDatasets = Array.from({length: 5}, (v, index) => ({
-    data: lineDwellTimeArr(),
-    label: lineDwellTimeLabel[index % 5],
-    backgroundColor: dwellTimeBackgroundColor[index % 5],
-    borderColor: dwellTimeBorderColor[index % 5],
-    borderWidth: 1,
-}));
+export const lineDwellTimeDatasets = (data) => {
+    let ret = [
+        {
+            data: [],
+            label: lineDwellTimeLabel[0],
+            backgroundColor: dwellTimeBackgroundColor[0],
+            borderColor: dwellTimeBorderColor[0],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineDwellTimeLabel[1],
+            backgroundColor: dwellTimeBackgroundColor[1],
+            borderColor: dwellTimeBorderColor[1],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineDwellTimeLabel[2],
+            backgroundColor: dwellTimeBackgroundColor[2],
+            borderColor: dwellTimeBorderColor[2],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineDwellTimeLabel[3],
+            backgroundColor: dwellTimeBackgroundColor[3],
+            borderColor: dwellTimeBorderColor[3],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineDwellTimeLabel[4],
+            backgroundColor: dwellTimeBackgroundColor[4],
+            borderColor: dwellTimeBorderColor[4],
+            borderWidth: 1,
+        },
+    ];
+    if (data) {
+        let tmp = Object.values(data);
+        for (let i = 0; i < tmp.length; i++) {
+            ret[0].data.push(tmp[i].FIVE_TO_THIRTY_MINUTES);
+            ret[1].data.push(tmp[i].THIRTY_TO_SIXTY_MINUTES);
+            ret[2].data.push(tmp[i].ONE_TO_FIVE_HOURS);
+            ret[3].data.push(tmp[i].FIVE_TO_EIGHT_HOURS);
+            ret[4].data.push(tmp[i].EIGHT_PLUS_HOURS);
+        }
+    }
+    return ret;
+};
 
 export const pieDwellTimeLabels = lineDwellTimeLabel;
-export const pieDwellTimeDatasets = [{
-    data: pieDwellTimeArr(),
+
+function pieDwellTimeDatasetsGetArrayFromData(data) {
+    if (data) {
+        return Object.values(data).map(value => value.count);
+    }
+}
+
+export const pieDwellTimeDatasets = (data) => [{
+    data: pieDwellTimeDatasetsGetArrayFromData(data),
     backgroundColor: dwellTimeBackgroundColor,
     borderColor: dwellTimeBorderColor,
     borderWidth: 1,
     hoverBackgroundColor: dwellTimeHoverBackgroundColor,
 }];
 
-//
-//-----third data-------------------------------------------------------------------------------------------------------
-//
-
-const lineRepeatVisitorsArr = () => Array.from({length: 16}, () => Math.floor(Math.random() * 15 + 5));
-const pieRepeatVisitorsArr = () => Array.from({length: 5}, () => Math.floor(Math.random() * 15 + 5));
-
+/*
+ * ----- Repeat Visitors / Repeat Visitors Distribution ----------------------------------------------------------------
+ */
 
 const repeatVisitorsBackgroundColor = ['rgba(76, 175, 80, 0.2)', 'rgba(233, 30, 99, 0.2)', 'rgba(33, 150, 243, 0.2)', 'rgba(255, 193, 7, 0.2)', 'rgba(101, 115, 195, 0.2)',];
 const repeatVisitorsBorderColor = ['#6fbf73', '#ed4b82', '#4dabf5', '#ffcd38', '#6573c3',];
-const repeatVisitorsHoverBackgroundColor = repeatVisitorsBorderColor;
 const lineRepeatVisitorsLabel = [
     'Daily',
     'Weekly',
@@ -104,19 +174,53 @@ const lineRepeatVisitorsLabel = [
     'Yesterday',
 ];
 export const lineRepeatVisitorsLabels = barProximityLabels;
-export const lineRepeatVisitorsDatasets = Array.from({length: 5}, (v, index) => ({
-    data: lineRepeatVisitorsArr(),
-    label: lineRepeatVisitorsLabel[index % 5],
-    backgroundColor: repeatVisitorsBackgroundColor[index % 5],
-    borderColor: repeatVisitorsBorderColor[index % 5],
-    borderWidth: 1,
-}));
-
-export const pieRepeatVisitorsLabels = lineRepeatVisitorsLabel;
-export const pieRepeatVisitorsDatasets = [{
-    data: pieRepeatVisitorsArr(),
-    backgroundColor: repeatVisitorsBackgroundColor,
-    borderColor: repeatVisitorsBorderColor,
-    borderWidth: 1,
-    hoverBackgroundColor: repeatVisitorsHoverBackgroundColor,
-}];
+export const lineRepeatVisitorsDatasets = (data) => {
+    let ret = [
+        {
+            data: [],
+            label: lineRepeatVisitorsLabel[0],
+            backgroundColor: repeatVisitorsBackgroundColor[0],
+            borderColor: repeatVisitorsBorderColor[0],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineRepeatVisitorsLabel[1],
+            backgroundColor: repeatVisitorsBackgroundColor[1],
+            borderColor: repeatVisitorsBorderColor[1],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineRepeatVisitorsLabel[2],
+            backgroundColor: repeatVisitorsBackgroundColor[2],
+            borderColor: repeatVisitorsBorderColor[2],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineRepeatVisitorsLabel[3],
+            backgroundColor: repeatVisitorsBackgroundColor[3],
+            borderColor: repeatVisitorsBorderColor[3],
+            borderWidth: 1,
+        },
+        {
+            data: [],
+            label: lineRepeatVisitorsLabel[4],
+            backgroundColor: repeatVisitorsBackgroundColor[4],
+            borderColor: repeatVisitorsBorderColor[4],
+            borderWidth: 1,
+        },
+    ];
+    if (data) {
+        let tmp = Object.values(data);
+        for (let i = 0; i < tmp.length; i++) {
+            ret[0].data.push(tmp[i].DAILY);
+            ret[1].data.push(tmp[i].WEEKLY);
+            ret[2].data.push(tmp[i].OCCASIONAL);
+            ret[3].data.push(tmp[i].FIRST_TIME);
+            ret[4].data.push(tmp[i].YESTERDAY);
+        }
+    }
+    return ret
+};

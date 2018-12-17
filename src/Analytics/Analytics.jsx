@@ -14,12 +14,11 @@ import Typography from '@material-ui/core/Typography';
 import BarGraph from '../Graphs/BarGraph';
 import PieGraph from '../Graphs/PieGraph';
 import LineGraph from '../Graphs/LineGraph';
+import moment from 'moment';
 
 // TODO: replace *
 import * as graphData from './graphData';
-import {getSiteID, getTotalVisitors} from "../api/getters";
 import {HTTPPRESENCE} from "../api/http";
-import {pieDwellTimeDatasets_func} from "./graphData";
 
 const styles = theme => ({
     root: {
@@ -53,26 +52,225 @@ class Analytics extends Component {
     handleRangeChange(which, payload) {
         // DO NOT DELETE NEXT ROW
         console.log(which, payload);
+        const {siteId} = this.props;
         this.setState({
             [which]: {
                 ...this.state[which],
                 ...payload,
             },
+            endDate: payload.selection.endDate,
+            startDate: payload.selection.startDate,
         });
+        if (moment(payload.selection.startDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') && moment(payload.selection.endDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD')) {
+            // today
+            console.log("today");
+            HTTPPRESENCE.get("/api/presence/v1/kpisummary/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        averageDwell: response.data.averageDwell,
+                        peakHour: response.data.peakSummary.peakHour,
+                        conversionRate: response.data.conversionRate,
+                        totalConnectedCount: response.data.totalConnectedCount,
+                        totalPasserbyCount: response.data.totalPasserbyCount,
+                        totalVisitorCount: response.data.totalVisitorCount,
+                        visitorCount: response.data.visitorCount,
+                        averageDwellByLevels: response.data.averageDwellByLevels,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/repeatvisitors/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        repeatVisitors: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/passerby/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        passerby: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/visitor/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        visitor: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/connected/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        connected: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/dwell/hourly", {
+                params: {
+                    siteId: siteId,
+                    date: moment().format('YYYY-MM-DD')
+                }
+            })
+                .then(response => {
+                    this.setState({
+                        dwellTime: response.data,
+                    })
+                });
+        } else if (moment(payload.selection.startDate).format('YYYY-MM-DD') === moment().subtract(1, "days").format('YYYY-MM-DD') && moment(payload.selection.endDate).format('YYYY-MM-DD') === moment().subtract(1, "days").format('YYYY-MM-DD')) {
+            // yesterday
+            console.log("yesterday");
+            HTTPPRESENCE.get("/api/presence/v1/kpisummary/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        averageDwell: response.data.averageDwell,
+                        peakHour: response.data.peakSummary.peakHour,
+                        conversionRate: response.data.conversionRate,
+                        totalConnectedCount: response.data.totalConnectedCount,
+                        totalPasserbyCount: response.data.totalPasserbyCount,
+                        totalVisitorCount: response.data.totalVisitorCount,
+                        visitorCount: response.data.visitorCount,
+                        averageDwellByLevels: response.data.averageDwellByLevels,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/repeatvisitors/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        repeatVisitors: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/passerby/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        passerby: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/visitor/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        visitor: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/connected/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        connected: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/dwell/hourly", {
+                params: {
+                    siteId: siteId,
+                    date: moment().subtract(1, "days").format('YYYY-MM-DD'),
+                }
+            })
+                .then(response => {
+                    this.setState({
+                        dwellTime: response.data,
+                    })
+                });
+        } else {
+            // custom
+            HTTPPRESENCE.get("/api/presence/v1/kpisummary", {
+                params: {
+                    siteId: siteId,
+                    startDate: moment(payload.selection.startDate).subtract(1, "days").format('YYYY-MM-DD'),
+                    endDate: moment(payload.selection.endDate).subtract(1, "days").format('YYYY-MM-DD'),
+                }
+            })
+                .then(response => {
+                    this.setState({
+                        averageDwell: response.data.averageDwell,
+                        peakHour: false,
+                        conversionRate: response.data.conversionRate,
+                        totalConnectedCount: response.data.totalConnectedCount,
+                        totalPasserbyCount: response.data.totalPasserbyCount,
+                        totalVisitorCount: response.data.totalVisitorCount,
+                        visitorCount: response.data.visitorCount,
+                        averageDwellByLevels: response.data.averageDwellByLevels,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/repeatvisitors/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        repeatVisitors: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/passerby/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        passerby: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/visitor/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        visitor: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/connected/hourly/yesterday", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        connected: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/dwell/hourly", {
+                params: {
+                    siteId: siteId,
+                    date: moment().subtract(1, "days").format('YYYY-MM-DD'),
+                }
+            })
+                .then(response => {
+                    this.setState({
+                        dwellTime: response.data,
+                    })
+                });
+        }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.siteId !== this.props.siteId) {
-            const {siteId} = this.props;
+        const {siteId} = this.props;
+        if (prevProps.siteId !== siteId) {
             HTTPPRESENCE.get("/api/presence/v1/kpisummary/today", {params: {siteId: siteId}})
                 .then(response => {
-                    console.log(response.data);
                     this.setState({
                         averageDwell: response.data.averageDwell,
-                        totalVisitorCount: response.data.totalVisitorCount,
                         peakHour: response.data.peakSummary.peakHour,
                         conversionRate: response.data.conversionRate,
-                        // averageDwellByLevels: response.data.averageDwellByLevels,
+                        totalConnectedCount: response.data.totalConnectedCount,
+                        totalPasserbyCount: response.data.totalPasserbyCount,
+                        totalVisitorCount: response.data.totalVisitorCount,
+                        visitorCount: response.data.visitorCount,
+                        averageDwellByLevels: response.data.averageDwellByLevels,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/repeatvisitors/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        repeatVisitors: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/passerby/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        passerby: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/visitor/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        visitor: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/connected/hourly/today", {params: {siteId: siteId}})
+                .then(response => {
+                    this.setState({
+                        connected: response.data,
+                    })
+                });
+            HTTPPRESENCE.get("/api/presence/v1/dwell/hourly", {
+                params: {
+                    siteId: siteId,
+                    date: moment().format('YYYY-MM-DD')
+                }
+            })
+                .then(response => {
+                    this.setState({
+                        dwellTime: response.data,
                     })
                 });
         }
@@ -82,15 +280,22 @@ class Analytics extends Component {
         const {classes} = this.props;
         const {
             averageDwell,
-            totalVisitorCount,
             peakHour,
             conversionRate,
-            // averageDwellByLevels,
+            averageDwellByLevels,
+            visitorCount,
+            totalVisitorCount,
+            totalConnectedCount,
+            totalPasserbyCount,
+            repeatVisitors,
+            passerby,
+            visitor,
+            connected,
+            dwellTime,
         } = this.state;
+        const lengthOfGraphLabels = new Date().getHours();
 
-        // const data1 = graphData.pieDwellTimeDatasets_func(averageDwellByLevels);
-        console.log("now", graphData.pieDwellTimeDatasets);
-        // console.log("todo", data1);
+
         return (
             <Grid
                 container
@@ -119,7 +324,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data={totalVisitorCount}
+                        data={visitorCount}
                         title="Total Visitors"
                         color="#6fbf73"
                     />
@@ -141,7 +346,7 @@ class Analytics extends Component {
                             fontSize="large"
                             className={classes.icon}
                         />}
-                        data={`${peakHour}:00 - ${peakHour + 1}:00`}
+                        data={peakHour && `${peakHour}:00 - ${peakHour + 1}:00`}
                         title="Peak Hour"
                         color="#4dabf5"
                     />
@@ -162,8 +367,8 @@ class Analytics extends Component {
                         Proximity
                     </Typography>
                     <BarGraph
-                        datasets={graphData.barProximityDatasets}
-                        labels={graphData.barProximityLabels}
+                        datasets={graphData.barProximityDatasets(passerby, visitor, connected)}
+                        labels={graphData.barProximityLabels.slice(0, lengthOfGraphLabels)}
                     />
                 </Grid>
                 <Grid item xs={5}>
@@ -171,7 +376,7 @@ class Analytics extends Component {
                         Proximity Distribution
                     </Typography>
                     <PieGraph
-                        datasets={graphData.pieProximityDatasets}
+                        datasets={graphData.pieProximityDatasets(totalPasserbyCount, totalVisitorCount, totalConnectedCount)}
                         labels={graphData.pieProximityLabels}
                     />
                 </Grid>
@@ -180,8 +385,8 @@ class Analytics extends Component {
                         Dwell Time
                     </Typography>
                     <LineGraph
-                        datasets={graphData.lineDwellTimeDatasets}
-                        labels={graphData.lineDwellTimeLabels}
+                        datasets={graphData.lineDwellTimeDatasets(dwellTime)}
+                        labels={graphData.lineDwellTimeLabels.slice(0, lengthOfGraphLabels)}
                     />
                 </Grid>
                 <Grid item xs={5}>
@@ -189,26 +394,17 @@ class Analytics extends Component {
                         Dwell Time Distribution
                     </Typography>
                     <PieGraph
-                        datasets={graphData.pieDwellTimeDatasets}
+                        datasets={graphData.pieDwellTimeDatasets(averageDwellByLevels)}
                         labels={graphData.pieDwellTimeLabels}
                     />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={12}>
                     <Typography variant="h6" gutterBottom>
                         Repeat Visitors
                     </Typography>
                     <LineGraph
-                        datasets={graphData.lineRepeatVisitorsDatasets}
-                        labels={graphData.lineRepeatVisitorsLabels}
-                    />
-                </Grid>
-                <Grid item xs={5}>
-                    <Typography variant="h6" gutterBottom>
-                        Repeat Visitors Distribution
-                    </Typography>
-                    <PieGraph
-                        datasets={graphData.pieRepeatVisitorsDatasets}
-                        labels={graphData.pieRepeatVisitorsLabels}
+                        datasets={graphData.lineRepeatVisitorsDatasets(repeatVisitors)}
+                        labels={graphData.lineRepeatVisitorsLabels.slice(0, lengthOfGraphLabels)}
                     />
                 </Grid>
             </Grid>

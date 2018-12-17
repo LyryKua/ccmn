@@ -61,8 +61,8 @@ class Prediction extends Component {
                 </Grid>
                 <Grid item xs={5}>
                     <PieGraph
-                        datasets={loremData.pieRepeatVisitorsDatasets}
-                        labels={loremData.pieRepeatVisitorsLabels}
+                        // datasets={loremData.pieRepeatVisitorsDatasets}
+                        // labels={loremData.pieRepeatVisitorsLabels}
                     />
                 </Grid>
                 <Grid item xs={12}>
