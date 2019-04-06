@@ -42,6 +42,13 @@ class Map extends Component {
     this.setState({ value });
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { siteId } = this.props;
+    if (prevProps.siteId !== siteId) {
+      console.log("props changed");
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const { value } = this.state;
