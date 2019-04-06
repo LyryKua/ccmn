@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { DateRangePicker } from 'react-date-range';
-import MyCard from './MyCard';
+import Card from './Card';
 import cards from './cards';
 import {
   Grid,
@@ -84,7 +84,7 @@ class Analytics extends Component {
         {
           cards.map(card => (
             <Grid item xs={3}>
-              <MyCard {...card}/>
+              <Card {...card}/>
             </Grid>
           ))
         }
