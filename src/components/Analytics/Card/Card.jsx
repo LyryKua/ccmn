@@ -16,8 +16,8 @@ const styles = theme => ({
 
 const Card = (props) => {
   const {
-    classes,
     color: backgroundColor,
+    classes,
     icon,
     data,
     title

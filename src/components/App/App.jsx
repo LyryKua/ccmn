@@ -85,7 +85,6 @@ class App extends Component {
     const { classes } = this.props;
     const { isOpen } = this.state;
 
-    console.log(this.state.siteId);
     return (
       <div className={classes.root}>
         <AppBar
