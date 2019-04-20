@@ -20,7 +20,9 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
     "react-sizeme": "^2.5.2",
-    "read-yaml": "^1.1.0"
+    "read-yaml": "^1.1.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -33,5 +35,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.8"
+  }
 }

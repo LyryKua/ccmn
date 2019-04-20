@@ -1,5 +1,4 @@
 // TODO: add activeClassName for NavLink
-// TODO: fix Switch in menu
 
 import React, { Component } from 'react';
 import classNames from 'classnames';
@@ -14,6 +13,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  CircularProgress,
   withStyles,
 } from '@material-ui/core';
 import {
@@ -35,6 +35,7 @@ import Map from '../Map';
 import Correlation from '../Correlation';
 import Prediction from '../Prediction';
 import Error404 from '../Error404';
+import { CISCO_PRESENCE } from "../../api/http";
 
 const items = [
   {
@@ -66,16 +67,25 @@ const items = [
 class App extends Component {
   state = {
     isOpen: false,
+    siteId: null,
   };
 
   handleDrawerOpen = () => this.setState({ isOpen: true });
 
   handleDrawerClose = () => this.setState({ isOpen: false });
 
+  componentDidMount() {
+    CISCO_PRESENCE
+      .get('/api/config/v1/sites')
+      .then(response => this.setState({ siteId: response.data[ 0 ][ 'aesUidString' ] }))
+      .catch(e => console.error(e));
+  }
+
   render() {
     const { classes } = this.props;
     const { isOpen } = this.state;
 
+    console.log(this.state.siteId);
     return (
       <div className={classes.root}>
         <AppBar
@@ -139,19 +149,23 @@ class App extends Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Switch>
-            {
-              items.map(item => (
-                <Route
-                  key={item.title}
-                  exact
-                  path={item.path}
-                  component={item.component}
-                />
-              ))
-            }
-            <Route component={Error404} />
-          </Switch>
+          {
+            !this.state.siteId
+              ? <CircularProgress className={classes.progress} color="secondary" />
+              : <Switch>
+                {
+                  items.map(item => (
+                    <Route
+                      key={item.title}
+                      exact
+                      path={item.path}
+                      render={() => (<item.component siteId={this.state.siteId} />)}
+                    />
+                  ))
+                }
+                <Route component={Error404} />
+              </Switch>
+          }
         </main>
       </div>
     );
