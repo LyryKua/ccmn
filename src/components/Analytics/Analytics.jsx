@@ -5,17 +5,12 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import RangePicker from '../RangePicker';
 import Card from './Card';
+import { Grid, Paper, Typography, withStyles } from '@material-ui/core';
 import {
-  Grid,
-  Paper,
-  Typography,
-  withStyles,
-} from '@material-ui/core';
-import {
+  MonetizationOn as MonetizationOnIcon,
   Person as PersonIcon,
   Poll as PollIcon,
   Timelapse as TimelapseIcon,
-  MonetizationOn as MonetizationOnIcon,
 } from '@material-ui/icons';
 import BarGraph from '../Graphs/BarGraph';
 import PieGraph from '../Graphs/PieGraph';
@@ -36,6 +31,8 @@ class Analytics extends Component {
       // startDate, endDate
       date: moment().format('YYYY-MM-DD'),
     },
+    proximityTail: '/hourly',
+
     isLoading: false,
     isLoaded: false,
     cards: {
@@ -44,13 +41,16 @@ class Analytics extends Component {
       peakHour: { hour: null, date: null },
       conversionRate: null,
     },
-    // TODO: will continue here
-    proximity: null,
+    proximity: {
+      passerby: null,
+      visitor: null,
+      connected: null,
+    },
     error: null,
   };
 
   fetchCardsData() {
-    CISCO_PRESENCE
+    return CISCO_PRESENCE
       .get('/api/presence/v1/kpisummary', {
         params: {
           ...this.state.range,
@@ -58,20 +58,59 @@ class Analytics extends Component {
         },
       })
       .then(response => {
-        const key = response.data[ 'peakSummary' ] ? 'peakSummary' : 'peakWeekSummary';
+        const key = response.data['peakSummary'] ? 'peakSummary' : 'peakWeekSummary';
         const peakHour = {
-          hour: response.data[ key ][ 'peakHour' ],
-          date: response.data[ key ][ 'peakDate' ],
+          hour: response.data[key]['peakHour'],
+          date: response.data[key]['peakDate'],
         };
-        const cards = {
+        return {
           peakHour,
-          totalVisitors: response.data[ 'visitorCount' ],
-          averageDwellTime: response.data[ 'averageDwell' ],
-          conversionRate: response.data[ 'conversionRate' ],
+          totalVisitors: response.data['visitorCount'],
+          averageDwellTime: response.data['averageDwell'],
+          conversionRate: response.data['conversionRate'],
         };
-        this.setState({ cards });
       })
       .catch(e => console.error(e));
+  }
+
+  fetchProximity() {
+    const passerby = CISCO_PRESENCE
+      .get(`/api/presence/v1/passerby${this.state.proximityTail}`, {
+        params: {
+          ...this.state.range,
+          siteId: this.props.siteId,
+        },
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(e => console.error(e));
+
+    const visitor = CISCO_PRESENCE
+      .get(`/api/presence/v1/visitor${this.state.proximityTail}`, {
+        params: {
+          ...this.state.range,
+          siteId: this.props.siteId,
+        },
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(e => console.error(e));
+
+    const connected = CISCO_PRESENCE
+      .get(`/api/presence/v1/connected${this.state.proximityTail}`, {
+        params: {
+          ...this.state.range,
+          siteId: this.props.siteId,
+        },
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(e => console.error(e));
+
+    return Promise.all([passerby, visitor, connected]);
   }
 
   handleChangeDate(start, end) {
@@ -79,18 +118,33 @@ class Analytics extends Component {
     const endDate = moment(end).format('YYYY-MM-DD');
     this.setState({
       range: startDate === endDate ? { date: startDate } : { startDate, endDate },
+      proximityTail: startDate === endDate ? '/hourly' : '/daily',
+    }, () => this.updateData());
+  }
+
+  updateData() {
+    Promise.all([
+      this.fetchCardsData(),
+      this.fetchProximity(),
+    ]).then(data => {
+      this.setState({ cards: data[0] });
+      this.setState({
+        proximity: {
+          passerby: Object.values(data[1][0]),
+          visitor: Object.values(data[1][1]),
+          connected: Object.values(data[1][2]),
+        },
+      });
     });
-    this.fetchCardsData();
   }
 
   componentDidMount() {
-    this.fetchCardsData();
+    this.updateData();
   }
 
   render() {
     const { classes } = this.props;
-    const { cards } = this.state;
-    const lengthOfGraphLabels = new Date().getHours();
+    const { cards, proximity } = this.state;
 
     return (
       <Grid
@@ -161,45 +215,43 @@ class Analytics extends Component {
             Proximity
           </Typography>
           <BarGraph
-            datasets={graphData.barProximityDatasets(passerby, visitor, connected)}
-            labels={graphData.barProximityLabels.slice(0, lengthOfGraphLabels)}
-          />
+            datasets={graphData.barProximityDatasets(proximity.passerby, proximity.visitor, proximity.connected)} />
         </Grid>
-        <Grid item xs={5}>
-          <Typography variant="h6" gutterBottom>
-            Proximity Distribution
-          </Typography>
-          <PieGraph
-            datasets={graphData.pieProximityDatasets(totalPasserbyCount, totalVisitorCount, totalConnectedCount)}
-            labels={graphData.pieProximityLabels}
-          />
-        </Grid>
+        {/*<Grid item xs={5}>*/}
+        {/*<Typography variant="h6" gutterBottom>*/}
+        {/*Proximity Distribution*/}
+        {/*</Typography>*/}
+        {/*<PieGraph*/}
+        {/*datasets={graphData.pieProximityDatasets(totalPasserbyCount, totalVisitorCount, totalConnectedCount)}*/}
+        {/*labels={graphData.pieProximityLabels}*/}
+        {/*/>*/}
+        {/*</Grid>*/}
         {/*<Grid item xs={7}>*/}
-          {/*<Typography variant="h6" gutterBottom>*/}
-            {/*Dwell Time*/}
-          {/*</Typography>*/}
-          {/*<LineGraph*/}
-            {/*datasets={graphData.lineDwellTimeDatasets(dwellTime)}*/}
-            {/*labels={graphData.lineDwellTimeLabels.slice(0, lengthOfGraphLabels)}*/}
-          {/*/>*/}
+        {/*<Typography variant="h6" gutterBottom>*/}
+        {/*Dwell Time*/}
+        {/*</Typography>*/}
+        {/*<LineGraph*/}
+        {/*datasets={graphData.lineDwellTimeDatasets(dwellTime)}*/}
+        {/*labels={graphData.lineDwellTimeLabels.slice(0, lengthOfGraphLabels)}*/}
+        {/*/>*/}
         {/*</Grid>*/}
         {/*<Grid item xs={5}>*/}
-          {/*<Typography variant="h6" gutterBottom>*/}
-            {/*Dwell Time Distribution*/}
-          {/*</Typography>*/}
-          {/*<PieGraph*/}
-            {/*datasets={graphData.pieDwellTimeDatasets(averageDwellByLevels)}*/}
-            {/*labels={graphData.pieDwellTimeLabels}*/}
-          {/*/>*/}
+        {/*<Typography variant="h6" gutterBottom>*/}
+        {/*Dwell Time Distribution*/}
+        {/*</Typography>*/}
+        {/*<PieGraph*/}
+        {/*datasets={graphData.pieDwellTimeDatasets(averageDwellByLevels)}*/}
+        {/*labels={graphData.pieDwellTimeLabels}*/}
+        {/*/>*/}
         {/*</Grid>*/}
         {/*<Grid item xs={12}>*/}
-          {/*<Typography variant="h6" gutterBottom>*/}
-            {/*Repeat Visitors*/}
-          {/*</Typography>*/}
-          {/*<LineGraph*/}
-            {/*datasets={graphData.lineRepeatVisitorsDatasets(repeatVisitors)}*/}
-            {/*labels={graphData.lineRepeatVisitorsLabels.slice(0, lengthOfGraphLabels)}*/}
-          {/*/>*/}
+        {/*<Typography variant="h6" gutterBottom>*/}
+        {/*Repeat Visitors*/}
+        {/*</Typography>*/}
+        {/*<LineGraph*/}
+        {/*datasets={graphData.lineRepeatVisitorsDatasets(repeatVisitors)}*/}
+        {/*labels={graphData.lineRepeatVisitorsLabels.slice(0, lengthOfGraphLabels)}*/}
+        {/*/>*/}
         {/*</Grid>*/}
       </Grid>
     );

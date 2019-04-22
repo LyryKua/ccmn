@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { createStaticRanges, DateRangePicker } from "react-date-range";
-import { addDays, addMonths, endOfDay, endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek } from "date-fns";
+import { createStaticRanges, DateRangePicker } from 'react-date-range';
+import { addDays, addMonths, endOfDay, endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek } from 'date-fns';
 
 const defineds = {
   startOfLastWeek: startOfWeek(addDays(new Date(), -7)),
@@ -75,8 +75,8 @@ class RangePicker extends Component {
 
   handleRangeChange(which, callback, payload) {
     this.setState({
-      [ which ]: {
-        ...this.state[ which ],
+      [which]: {
+        ...this.state[which],
         ...payload,
       },
     });
@@ -92,7 +92,7 @@ class RangePicker extends Component {
         showSelectionPreview={true}
         moveRangeOnFirstSelection={false}
         months={3}
-        ranges={[ this.state.rangePicker.selection ]}
+        ranges={[this.state.rangePicker.selection]}
         direction="horizontal"
         maxDate={new Date()}
       />
