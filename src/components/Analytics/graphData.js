@@ -145,14 +145,8 @@ export const lineDwellTimeDatasets = data => {
 
 export const pieDwellTimeLabels = lineDwellTimeLabel;
 
-function pieDwellTimeDatasetsGetArrayFromData(data) {
-  if (data) {
-    return Object.values(data).map(value => value.count);
-  }
-}
-
-export const pieDwellTimeDatasets = (data) => [{
-  data: pieDwellTimeDatasetsGetArrayFromData(data),
+export const pieDwellTimeDatasets = (fiveToThirtyMinutes, thirtyToSixtyMinutes, oneToFiveHours, fiveToEightHours, eightPlusHours) => [{
+  data: [fiveToThirtyMinutes, thirtyToSixtyMinutes, oneToFiveHours, fiveToEightHours, eightPlusHours],
   backgroundColor: dwellTimeBackgroundColor,
   borderColor: dwellTimeBorderColor,
   borderWidth: 1,

@@ -18,7 +18,7 @@ import LineGraph from '../Graphs/LineGraph';
 import * as graphData from './graphData';
 import { CISCO_PRESENCE } from '../../api/http';
 import moment from 'moment';
-import { responseToDwellTime } from './helpers';
+import { responseToDwellTime, responseToDwellTimeDistribution } from './helpers';
 
 const styles = {
   paper: {
@@ -146,6 +146,18 @@ class Analytics extends Component {
       .catch(e => console.error(e));
   }
 
+  fetchDwellTimeDistribution() {
+    return CISCO_PRESENCE
+      .get('api/presence/v1/dwell/count', {
+        params: {
+          ...this.state.range,
+          siteId: this.props.siteId,
+        },
+      })
+      .then(response => response.data)
+      .catch(e => console.error(e));
+  }
+
   handleChangeDate(start, end) {
     const startDate = moment(start).format('YYYY-MM-DD');
     const endDate = moment(end).format('YYYY-MM-DD');
@@ -161,21 +173,19 @@ class Analytics extends Component {
       this.fetchCardsDataAndProximityDistribution(),
       this.fetchProximity(),
       this.fetchDwellTime(),
+      this.fetchDwellTimeDistribution(),
     ]).then(data => {
       this.setState({
         cards: data[0].cards,
         proximityDistribution: data[0].proximityDistribution,
-      });
-      this.setState({
         proximity: {
           passerby: Object.values(data[1][0]),
           visitor: Object.values(data[1][1]),
           connected: Object.values(data[1][2]),
         },
-      });
-      this.setState({
         dwellTime: responseToDwellTime(data[2]),
-      })
+        dwellTimeDistribution: responseToDwellTimeDistribution(data[3]),
+      });
     });
   }
 
@@ -185,7 +195,7 @@ class Analytics extends Component {
 
   render() {
     const { classes } = this.props;
-    const { cards, proximity, proximityDistribution, dwellTime } = this.state;
+    const { cards, proximity, proximityDistribution, dwellTime, dwellTimeDistribution } = this.state;
 
     return (
       <Grid
@@ -279,15 +289,21 @@ class Analytics extends Component {
             datasets={graphData.lineDwellTimeDatasets(dwellTime)}
           />
         </Grid>
-        {/*<Grid item xs={5}>*/}
-        {/*<Typography variant="h6" gutterBottom>*/}
-        {/*Dwell Time Distribution*/}
-        {/*</Typography>*/}
-        {/*<PieGraph*/}
-        {/*datasets={graphData.pieDwellTimeDatasets(averageDwellByLevels)}*/}
-        {/*labels={graphData.pieDwellTimeLabels}*/}
-        {/*/>*/}
-        {/*</Grid>*/}
+        <Grid item xs={5}>
+          <Typography variant="h6" gutterBottom>
+            Dwell Time Distribution
+          </Typography>
+          <PieGraph
+            datasets={graphData.pieDwellTimeDatasets(
+              dwellTimeDistribution.fiveToThirtyMinutes,
+              dwellTimeDistribution.thirtyToSixtyMinutes,
+              dwellTimeDistribution.oneToFiveHours,
+              dwellTimeDistribution.fiveToEightHours,
+              dwellTimeDistribution.eightPlusHours,
+            )}
+            labels={graphData.pieDwellTimeLabels}
+          />
+        </Grid>
         {/*<Grid item xs={12}>*/}
         {/*<Typography variant="h6" gutterBottom>*/}
         {/*Repeat Visitors*/}

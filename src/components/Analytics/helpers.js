@@ -16,3 +16,11 @@ export const responseToDwellTime = responseData => {
 
   return dwellTime;
 };
+
+export const responseToDwellTimeDistribution = responseData => ({
+  fiveToThirtyMinutes: responseData['FIVE_TO_THIRTY_MINUTES'],
+  thirtyToSixtyMinutes: responseData['THIRTY_TO_SIXTY_MINUTES'],
+  oneToFiveHours: responseData['ONE_TO_FIVE_HOURS'],
+  fiveToEightHours: responseData['FIVE_TO_EIGHT_HOURS'],
+  eightPlusHours: responseData['EIGHT_PLUS_HOURS'],
+});

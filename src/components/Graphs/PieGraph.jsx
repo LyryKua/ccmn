@@ -10,11 +10,12 @@ const styles = () => ({
 });
 
 const PieGraph = (props) => {
-  const { classes } = props;
+  const { classes, datasets } = props;
   const data = {
-    labels: props.labels,
-    datasets: props.datasets,
+    labels: Object.keys(datasets[0].data),
+    datasets,
   };
+
   return (
     <Paper className={classes.paper}>
       <Pie
