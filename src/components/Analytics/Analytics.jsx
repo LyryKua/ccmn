@@ -18,7 +18,7 @@ import LineGraph from '../Graphs/LineGraph';
 import * as graphData from './graphData';
 import { CISCO_PRESENCE } from '../../api/http';
 import moment from 'moment';
-import { responseToDwellTime, responseToDwellTimeDistribution } from './helpers';
+import { responseToDwellTime, responseToDwellTimeDistribution, responseToRepeatVisitors } from './helpers';
 
 const styles = {
   paper: {
@@ -34,6 +34,7 @@ class Analytics extends Component {
     },
     proximityTail: '/hourly',
     dwellTimeTail: '/hourly',
+    repeatVisitorsTail: '/hourly',
 
     cards: {
       totalVisitors: null,
@@ -64,6 +65,13 @@ class Analytics extends Component {
       oneToFiveHours: null,
       fiveToEightHours: null,
       eightPlusHours: null,
+    },
+    repeatVisitors: {
+      daily: null,
+      firstTime: null,
+      occasional: null,
+      weekly: null,
+      yesterday: null,
     },
   };
 
@@ -158,6 +166,18 @@ class Analytics extends Component {
       .catch(e => console.error(e));
   }
 
+  fetchRepeatVisitors() {
+    return CISCO_PRESENCE
+      .get(`/api/presence/v1/repeatvisitors${this.state.repeatVisitorsTail}`, {
+        params: {
+          ...this.state.range,
+          siteId: this.props.siteId,
+        },
+      })
+      .then(response => response.data)
+      .catch(e => console.error(e));
+  }
+
   handleChangeDate(start, end) {
     const startDate = moment(start).format('YYYY-MM-DD');
     const endDate = moment(end).format('YYYY-MM-DD');
@@ -165,6 +185,7 @@ class Analytics extends Component {
       range: startDate === endDate ? { date: startDate } : { startDate, endDate },
       proximityTail: startDate === endDate ? '/hourly' : '/daily',
       dwellTimeTail: startDate === endDate ? '/hourly' : '/daily',
+      repeatVisitorsTail: startDate === endDate ? '/hourly' : '/daily',
     }, () => this.updateData());
   }
 
@@ -174,6 +195,7 @@ class Analytics extends Component {
       this.fetchProximity(),
       this.fetchDwellTime(),
       this.fetchDwellTimeDistribution(),
+      this.fetchRepeatVisitors(),
     ]).then(data => {
       this.setState({
         cards: data[0].cards,
@@ -185,6 +207,7 @@ class Analytics extends Component {
         },
         dwellTime: responseToDwellTime(data[2]),
         dwellTimeDistribution: responseToDwellTimeDistribution(data[3]),
+        repeatVisitors: responseToRepeatVisitors(data[4]),
       });
     });
   }
@@ -195,7 +218,7 @@ class Analytics extends Component {
 
   render() {
     const { classes } = this.props;
-    const { cards, proximity, proximityDistribution, dwellTime, dwellTimeDistribution } = this.state;
+    const { cards, proximity, proximityDistribution, dwellTime, dwellTimeDistribution, repeatVisitors } = this.state;
 
     return (
       <Grid
@@ -285,9 +308,7 @@ class Analytics extends Component {
           <Typography variant="h6" gutterBottom>
             Dwell Time
           </Typography>
-          <LineGraph
-            datasets={graphData.lineDwellTimeDatasets(dwellTime)}
-          />
+          <LineGraph datasets={graphData.lineDwellTimeDatasets(dwellTime)} />
         </Grid>
         <Grid item xs={5}>
           <Typography variant="h6" gutterBottom>
@@ -304,15 +325,12 @@ class Analytics extends Component {
             labels={graphData.pieDwellTimeLabels}
           />
         </Grid>
-        {/*<Grid item xs={12}>*/}
-        {/*<Typography variant="h6" gutterBottom>*/}
-        {/*Repeat Visitors*/}
-        {/*</Typography>*/}
-        {/*<LineGraph*/}
-        {/*datasets={graphData.lineRepeatVisitorsDatasets(repeatVisitors)}*/}
-        {/*labels={graphData.lineRepeatVisitorsLabels.slice(0, lengthOfGraphLabels)}*/}
-        {/*/>*/}
-        {/*</Grid>*/}
+        <Grid item xs={12}>
+          <Typography variant="h6" gutterBottom>
+            Repeat Visitors
+          </Typography>
+          <LineGraph datasets={graphData.lineRepeatVisitorsDatasets(repeatVisitors)} />
+        </Grid>
       </Grid>
     );
   }

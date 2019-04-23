@@ -38,7 +38,7 @@ export const barProximityDatasets = (passerby, visitor, connected) => {
   let data = [
     {
       data: [],
-      label: barProximityLabel[0],
+      label: 'Passerby',
       backgroundColor: proximityBackgroundColor[0],
       borderColor: proximityBorderColor[0],
       borderWidth: 1,
@@ -46,7 +46,7 @@ export const barProximityDatasets = (passerby, visitor, connected) => {
     },
     {
       data: [],
-      label: barProximityLabel[1],
+      label: 'Visitors',
       backgroundColor: proximityBackgroundColor[1],
       borderColor: proximityBorderColor[1],
       borderWidth: 1,
@@ -54,7 +54,7 @@ export const barProximityDatasets = (passerby, visitor, connected) => {
     },
     {
       data: [],
-      label: barProximityLabel[2],
+      label: 'Connected',
       backgroundColor: proximityBackgroundColor[2],
       borderColor: proximityBorderColor[2],
       borderWidth: 1,
@@ -131,7 +131,6 @@ export const lineDwellTimeDatasets = data => {
       borderWidth: 1,
     },
   ];
-  // console.log(Object.values(data));
   if (data) {
     return ret.map((item, index) => {
       return {
@@ -171,49 +170,47 @@ export const lineRepeatVisitorsDatasets = (data) => {
   let ret = [
     {
       data: [],
-      label: lineRepeatVisitorsLabel[0],
+      label: 'Daily',
       backgroundColor: repeatVisitorsBackgroundColor[0],
       borderColor: repeatVisitorsBorderColor[0],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineRepeatVisitorsLabel[1],
+      label: 'Weekly',
       backgroundColor: repeatVisitorsBackgroundColor[1],
       borderColor: repeatVisitorsBorderColor[1],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineRepeatVisitorsLabel[2],
+      label: 'Occasional',
       backgroundColor: repeatVisitorsBackgroundColor[2],
       borderColor: repeatVisitorsBorderColor[2],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineRepeatVisitorsLabel[3],
+      label: 'First Time',
       backgroundColor: repeatVisitorsBackgroundColor[3],
       borderColor: repeatVisitorsBorderColor[3],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineRepeatVisitorsLabel[4],
+      label: 'Yesterday',
       backgroundColor: repeatVisitorsBackgroundColor[4],
       borderColor: repeatVisitorsBorderColor[4],
       borderWidth: 1,
     },
   ];
   if (data) {
-    let tmp = Object.values(data);
-    for (let i = 0; i < tmp.length; i++) {
-      ret[0].data.push(tmp[i].DAILY);
-      ret[1].data.push(tmp[i].WEEKLY);
-      ret[2].data.push(tmp[i].OCCASIONAL);
-      ret[3].data.push(tmp[i].FIRST_TIME);
-      ret[4].data.push(tmp[i].YESTERDAY);
-    }
+    return ret.map((item, index) => {
+      return {
+        ...item,
+        data: Object.values(data)[index],
+      }
+    })
   }
   return ret
 };

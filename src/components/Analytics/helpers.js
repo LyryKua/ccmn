@@ -24,3 +24,22 @@ export const responseToDwellTimeDistribution = responseData => ({
   fiveToEightHours: responseData['FIVE_TO_EIGHT_HOURS'],
   eightPlusHours: responseData['EIGHT_PLUS_HOURS'],
 });
+
+export const responseToRepeatVisitors = responseData => {
+  const dwellTime = {
+    daily: [],
+    firstTime: [],
+    occasional: [],
+    weekly: [],
+    yesterday: [],
+  };
+  Object.values(responseData).forEach(data => {
+    dwellTime.daily.push(data['DAILY']);
+    dwellTime.firstTime.push(data['FIRST_TIME']);
+    dwellTime.occasional.push(data['OCCASIONAL']);
+    dwellTime.weekly.push(data['WEEKLY']);
+    dwellTime.yesterday.push(data['YESTERDAY']);
+  });
+
+  return dwellTime;
+};
