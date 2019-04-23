@@ -33,8 +33,6 @@ class Analytics extends Component {
     },
     proximityTail: '/hourly',
 
-    isLoading: false,
-    isLoaded: false,
     cards: {
       totalVisitors: null,
       averageDwellTime: null,
@@ -46,10 +44,14 @@ class Analytics extends Component {
       visitor: null,
       connected: null,
     },
-    error: null,
+    proximityDistribution: {
+      totalPasserbyCount: null,
+      totalVisitorCount: null,
+      totalConnectedCount: null,
+    },
   };
 
-  fetchCardsData() {
+  fetchCardsDataAndProximityDistribution() {
     return CISCO_PRESENCE
       .get('/api/presence/v1/kpisummary', {
         params: {
@@ -64,10 +66,17 @@ class Analytics extends Component {
           date: response.data[key]['peakDate'],
         };
         return {
-          peakHour,
-          totalVisitors: response.data['visitorCount'],
-          averageDwellTime: response.data['averageDwell'],
-          conversionRate: response.data['conversionRate'],
+          cards: {
+            peakHour,
+            totalVisitors: response.data['visitorCount'],
+            averageDwellTime: response.data['averageDwell'],
+            conversionRate: response.data['conversionRate'],
+          },
+          proximityDistribution: {
+            totalPasserbyCount: response.data['totalPasserbyCount'],
+            totalVisitorCount: response.data['totalVisitorCount'],
+            totalConnectedCount: response.data['totalConnectedCount'],
+          },
         };
       })
       .catch(e => console.error(e));
@@ -124,10 +133,13 @@ class Analytics extends Component {
 
   updateData() {
     Promise.all([
-      this.fetchCardsData(),
+      this.fetchCardsDataAndProximityDistribution(),
       this.fetchProximity(),
     ]).then(data => {
-      this.setState({ cards: data[0] });
+      this.setState({
+        cards: data[0].cards,
+        proximityDistribution: data[0].proximityDistribution,
+      });
       this.setState({
         proximity: {
           passerby: Object.values(data[1][0]),
@@ -144,7 +156,7 @@ class Analytics extends Component {
 
   render() {
     const { classes } = this.props;
-    const { cards, proximity } = this.state;
+    const { cards, proximity, proximityDistribution } = this.state;
 
     return (
       <Grid
@@ -217,15 +229,19 @@ class Analytics extends Component {
           <BarGraph
             datasets={graphData.barProximityDatasets(proximity.passerby, proximity.visitor, proximity.connected)} />
         </Grid>
-        {/*<Grid item xs={5}>*/}
-        {/*<Typography variant="h6" gutterBottom>*/}
-        {/*Proximity Distribution*/}
-        {/*</Typography>*/}
-        {/*<PieGraph*/}
-        {/*datasets={graphData.pieProximityDatasets(totalPasserbyCount, totalVisitorCount, totalConnectedCount)}*/}
-        {/*labels={graphData.pieProximityLabels}*/}
-        {/*/>*/}
-        {/*</Grid>*/}
+        <Grid item xs={5}>
+          <Typography variant="h6" gutterBottom>
+            Proximity Distribution
+          </Typography>
+          <PieGraph
+            datasets={graphData.pieProximityDatasets(
+              proximityDistribution.totalPasserbyCount,
+              proximityDistribution.totalVisitorCount,
+              proximityDistribution.totalConnectedCount,
+            )}
+            labels={graphData.pieProximityLabels}
+          />
+        </Grid>
         {/*<Grid item xs={7}>*/}
         {/*<Typography variant="h6" gutterBottom>*/}
         {/*Dwell Time*/}
