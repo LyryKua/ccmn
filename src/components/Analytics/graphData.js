@@ -93,53 +93,52 @@ const lineDwellTimeLabel = [
   '8+ hours',
 ];
 export const lineDwellTimeLabels = barProximityLabels;
-export const lineDwellTimeDatasets = (data) => {
+export const lineDwellTimeDatasets = data => {
   let ret = [
     {
       data: [],
-      label: lineDwellTimeLabel[0],
+      label: '5-30 mins',
       backgroundColor: dwellTimeBackgroundColor[0],
       borderColor: dwellTimeBorderColor[0],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineDwellTimeLabel[1],
+      label: '30-60 mins',
       backgroundColor: dwellTimeBackgroundColor[1],
       borderColor: dwellTimeBorderColor[1],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineDwellTimeLabel[2],
+      label: '1-5 hours',
       backgroundColor: dwellTimeBackgroundColor[2],
       borderColor: dwellTimeBorderColor[2],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineDwellTimeLabel[3],
+      label: '5-8 hours',
       backgroundColor: dwellTimeBackgroundColor[3],
       borderColor: dwellTimeBorderColor[3],
       borderWidth: 1,
     },
     {
       data: [],
-      label: lineDwellTimeLabel[4],
+      label: '8+ hours',
       backgroundColor: dwellTimeBackgroundColor[4],
       borderColor: dwellTimeBorderColor[4],
       borderWidth: 1,
     },
   ];
+  // console.log(Object.values(data));
   if (data) {
-    let tmp = Object.values(data);
-    for (let i = 0; i < tmp.length; i++) {
-      ret[0].data.push(tmp[i].FIVE_TO_THIRTY_MINUTES);
-      ret[1].data.push(tmp[i].THIRTY_TO_SIXTY_MINUTES);
-      ret[2].data.push(tmp[i].ONE_TO_FIVE_HOURS);
-      ret[3].data.push(tmp[i].FIVE_TO_EIGHT_HOURS);
-      ret[4].data.push(tmp[i].EIGHT_PLUS_HOURS);
-    }
+    return ret.map((item, index) => {
+      return {
+        ...item,
+        data: Object.values(data)[index],
+      }
+    })
   }
   return ret;
 };

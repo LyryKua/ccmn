@@ -18,6 +18,7 @@ import LineGraph from '../Graphs/LineGraph';
 import * as graphData from './graphData';
 import { CISCO_PRESENCE } from '../../api/http';
 import moment from 'moment';
+import { responseToDwellTime } from './helpers';
 
 const styles = {
   paper: {
@@ -32,6 +33,7 @@ class Analytics extends Component {
       date: moment().format('YYYY-MM-DD'),
     },
     proximityTail: '/hourly',
+    dwellTimeTail: '/hourly',
 
     cards: {
       totalVisitors: null,
@@ -48,6 +50,20 @@ class Analytics extends Component {
       totalPasserbyCount: null,
       totalVisitorCount: null,
       totalConnectedCount: null,
+    },
+    dwellTime: {
+      fiveToThirtyMinutes: null,
+      thirtyToSixtyMinutes: null,
+      oneToFiveHours: null,
+      fiveToEightHours: null,
+      eightPlusHours: null,
+    },
+    dwellTimeDistribution: {
+      fiveToThirtyMinutes: null,
+      thirtyToSixtyMinutes: null,
+      oneToFiveHours: null,
+      fiveToEightHours: null,
+      eightPlusHours: null,
     },
   };
 
@@ -90,9 +106,7 @@ class Analytics extends Component {
           siteId: this.props.siteId,
         },
       })
-      .then(response => {
-        return response.data;
-      })
+      .then(response => response.data)
       .catch(e => console.error(e));
 
     const visitor = CISCO_PRESENCE
@@ -114,12 +128,22 @@ class Analytics extends Component {
           siteId: this.props.siteId,
         },
       })
-      .then(response => {
-        return response.data;
-      })
+      .then(response => response.data)
       .catch(e => console.error(e));
 
     return Promise.all([passerby, visitor, connected]);
+  }
+
+  fetchDwellTime() {
+    return CISCO_PRESENCE
+      .get(`/api/presence/v1/dwell${this.state.dwellTimeTail}`, {
+        params: {
+          ...this.state.range,
+          siteId: this.props.siteId,
+        },
+      })
+      .then(response => response.data)
+      .catch(e => console.error(e));
   }
 
   handleChangeDate(start, end) {
@@ -128,6 +152,7 @@ class Analytics extends Component {
     this.setState({
       range: startDate === endDate ? { date: startDate } : { startDate, endDate },
       proximityTail: startDate === endDate ? '/hourly' : '/daily',
+      dwellTimeTail: startDate === endDate ? '/hourly' : '/daily',
     }, () => this.updateData());
   }
 
@@ -135,6 +160,7 @@ class Analytics extends Component {
     Promise.all([
       this.fetchCardsDataAndProximityDistribution(),
       this.fetchProximity(),
+      this.fetchDwellTime(),
     ]).then(data => {
       this.setState({
         cards: data[0].cards,
@@ -147,6 +173,9 @@ class Analytics extends Component {
           connected: Object.values(data[1][2]),
         },
       });
+      this.setState({
+        dwellTime: responseToDwellTime(data[2]),
+      })
     });
   }
 
@@ -156,7 +185,7 @@ class Analytics extends Component {
 
   render() {
     const { classes } = this.props;
-    const { cards, proximity, proximityDistribution } = this.state;
+    const { cards, proximity, proximityDistribution, dwellTime } = this.state;
 
     return (
       <Grid
@@ -242,15 +271,14 @@ class Analytics extends Component {
             labels={graphData.pieProximityLabels}
           />
         </Grid>
-        {/*<Grid item xs={7}>*/}
-        {/*<Typography variant="h6" gutterBottom>*/}
-        {/*Dwell Time*/}
-        {/*</Typography>*/}
-        {/*<LineGraph*/}
-        {/*datasets={graphData.lineDwellTimeDatasets(dwellTime)}*/}
-        {/*labels={graphData.lineDwellTimeLabels.slice(0, lengthOfGraphLabels)}*/}
-        {/*/>*/}
-        {/*</Grid>*/}
+        <Grid item xs={7}>
+          <Typography variant="h6" gutterBottom>
+            Dwell Time
+          </Typography>
+          <LineGraph
+            datasets={graphData.lineDwellTimeDatasets(dwellTime)}
+          />
+        </Grid>
         {/*<Grid item xs={5}>*/}
         {/*<Typography variant="h6" gutterBottom>*/}
         {/*Dwell Time Distribution*/}
