@@ -9,11 +9,12 @@ const styles = {
   },
 };
 
+// TODO: change labels for graph
 const BarGraph = (props) => {
-  const { classes } = props;
+  const { classes, datasets } = props;
   const data = {
-    labels: props.labels,
-    datasets: props.datasets,
+    datasets,
+    labels: Array(datasets[0].data.length).fill('42'),
   };
 
   return (

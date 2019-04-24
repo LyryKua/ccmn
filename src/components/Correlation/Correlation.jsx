@@ -56,7 +56,7 @@ class Correlation extends Component {
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <DateRangePicker
-              onChange={this.handleRangeChange.bind(this, 'dateRangePicker')}
+              onChange={this.handleRangeChange.bind(this, 'rangePicker')}
               showSelectionPreview={true}
               moveRangeOnFirstSelection={false}
               className={'PreviewArea'}

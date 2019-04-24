@@ -60,4 +60,7 @@ export default theme => ({
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
   },
+  progress: {
+    margin: theme.spacing.unit * 2,
+  },
 });

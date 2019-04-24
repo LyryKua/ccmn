@@ -5,6 +5,7 @@ export function axiosTest(uri) {
         .then(response => {
         })
 }
+
 export function axiosTest2(uri) {
     return HTTPPRESENCE.get(uri)
         .then(response => {
