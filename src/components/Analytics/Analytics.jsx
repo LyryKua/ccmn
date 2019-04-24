@@ -178,7 +178,7 @@ class Analytics extends Component {
       .catch(e => console.error(e));
   }
 
-  handleChangeDate(start, end) {
+  handleChangeDate = (start, end) => {
     const startDate = moment(start).format('YYYY-MM-DD');
     const endDate = moment(end).format('YYYY-MM-DD');
     this.setState({
@@ -187,7 +187,7 @@ class Analytics extends Component {
       dwellTimeTail: startDate === endDate ? '/hourly' : '/daily',
       repeatVisitorsTail: startDate === endDate ? '/hourly' : '/daily',
     }, () => this.updateData());
-  }
+  };
 
   updateData() {
     Promise.all([
@@ -197,17 +197,30 @@ class Analytics extends Component {
       this.fetchDwellTimeDistribution(),
       this.fetchRepeatVisitors(),
     ]).then(data => {
+      const [
+        {
+          cards,
+          proximityDistribution,
+        }, [
+          passerby,
+          visitor,
+          connected,
+        ],
+        dwellTime,
+        dwellTimeDistribution,
+        repeatVisitors,
+      ] = data;
       this.setState({
-        cards: data[0].cards,
-        proximityDistribution: data[0].proximityDistribution,
+        cards: cards,
+        proximityDistribution: proximityDistribution,
         proximity: {
-          passerby: Object.values(data[1][0]),
-          visitor: Object.values(data[1][1]),
-          connected: Object.values(data[1][2]),
+          passerby: Object.values(passerby),
+          visitor: Object.values(visitor),
+          connected: Object.values(connected),
         },
-        dwellTime: responseToDwellTime(data[2]),
-        dwellTimeDistribution: responseToDwellTimeDistribution(data[3]),
-        repeatVisitors: responseToRepeatVisitors(data[4]),
+        dwellTime: responseToDwellTime(dwellTime),
+        dwellTimeDistribution: responseToDwellTimeDistribution(dwellTimeDistribution),
+        repeatVisitors: responseToRepeatVisitors(repeatVisitors),
       });
     });
   }
@@ -229,7 +242,7 @@ class Analytics extends Component {
       >
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <RangePicker onChange={this.handleChangeDate.bind(this)} />
+            <RangePicker onChange={this.handleChangeDate} />
           </Paper>
         </Grid>
         <Grid item xs={3}>
