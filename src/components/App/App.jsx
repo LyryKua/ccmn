@@ -35,62 +35,56 @@ import Map from '../Map';
 import Correlation from '../Correlation';
 import Prediction from '../Prediction';
 import Error404 from '../Error404';
-import { CISCO_PRESENCE } from "../../api/http";
-
-const items = [
-  {
-    icon: <GroupIcon />,
-    title: 'Analytics',
-    component: Analytics,
-    path: '/',
-  },
-  {
-    icon: <MapIcon />,
-    title: 'Map',
-    component: Map,
-    path: '/map',
-  },
-  {
-    icon: <ScoreIcon />,
-    title: 'Correlation',
-    component: Correlation,
-    path: '/correlation',
-  },
-  {
-    icon: <TimelineIcon />,
-    title: 'Prediction',
-    component: Prediction,
-    path: '/prediction',
-  },
-];
+import { CISCO_CMX, CISCO_PRESENCE } from '../../api/http';
 
 class App extends Component {
   state = {
     isOpen: false,
     siteId: null,
+    maps: null,
   };
 
   handleDrawerOpen = () => this.setState({ isOpen: true });
 
   handleDrawerClose = () => this.setState({ isOpen: false });
 
-  componentDidMount() {
-    CISCO_PRESENCE
+  fetchSiteId() {
+    return CISCO_PRESENCE
       .get('/api/config/v1/sites')
-      .then(response => this.setState({ siteId: response.data[ 0 ][ 'aesUidString' ] }))
+      .then(response => response.data)
       .catch(e => console.error(e));
+  }
+
+  fetchMaps() {
+    return CISCO_CMX
+      .get('/api/config/v1/maps')
+      .then(response => response.data)
+      .catch(e => console.error(e));
+  }
+
+  componentDidMount() {
+    Promise.all([
+      this.fetchSiteId(),
+      this.fetchMaps(),
+    ]).then(data => {
+      const [siteId, maps] = data;
+      this.setState({
+        siteId: siteId[0]['aesUidString'],
+        maps: maps['campuses']['0']['buildingList']['0']['floorList'],
+      })
+    })
   }
 
   render() {
     const { classes } = this.props;
-    const { isOpen } = this.state;
+    const { isOpen, siteId, maps } = this.state;
 
     return (
       <div className={classes.root}>
         <AppBar
           position="fixed"
           className={classNames(classes.appBar, {
-            [ classes.appBarShift ]: isOpen,
+            [classes.appBarShift]: isOpen,
           })}
         >
           <Toolbar disableGutters={!isOpen}>
@@ -99,7 +93,7 @@ class App extends Component {
               aria-label="Open drawer"
               onClick={this.handleDrawerOpen}
               className={classNames(classes.menuBtn, {
-                [ classes.hide ]: isOpen,
+                [classes.hide]: isOpen,
               })}
             >
               <MenuIcon />
@@ -112,13 +106,13 @@ class App extends Component {
         <Drawer
           variant="permanent"
           className={classNames(classes.drawer, {
-            [ classes.drawerOpen ]: isOpen,
-            [ classes.drawerClose ]: !isOpen,
+            [classes.drawerOpen]: isOpen,
+            [classes.drawerClose]: !isOpen,
           })}
           classes={{
             paper: classNames({
-              [ classes.drawerOpen ]: isOpen,
-              [ classes.drawerClose ]: !isOpen,
+              [classes.drawerOpen]: isOpen,
+              [classes.drawerClose]: !isOpen,
             }),
           }}
           open={isOpen}
@@ -130,38 +124,58 @@ class App extends Component {
           </div>
           <Divider />
           <List>
-            {
-              items.map(item => (
-                <NavLink
-                  key={item.title}
-                  exact
-                  to={item.path}
-                >
-                  <ListItem button>
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.title} />
-                  </ListItem>
-                </NavLink>
-              ))
-            }
+            <NavLink exact to={'/'}>
+              <ListItem button>
+                <ListItemIcon><GroupIcon /></ListItemIcon>
+                <ListItemText primary={'Analytics'} />
+              </ListItem>
+            </NavLink>
+            <NavLink exact to={'/map'}>
+              <ListItem button>
+                <ListItemIcon><MapIcon /></ListItemIcon>
+                <ListItemText primary={'Map'} />
+              </ListItem>
+            </NavLink>
+            <NavLink exact to={'/'}>
+              <ListItem button>
+                <ListItemIcon><ScoreIcon /></ListItemIcon>
+                <ListItemText primary={'Correlation'} />
+              </ListItem>
+            </NavLink>
+            <NavLink exact to={'/'}>
+              <ListItem button>
+                <ListItemIcon><TimelineIcon /></ListItemIcon>
+                <ListItemText primary={'Prediction'} />
+              </ListItem>
+            </NavLink>
           </List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {
-            !this.state.siteId
-              ? <CircularProgress className={classes.progress} color="secondary" />
-              : <Switch>
-                {
-                  items.map(item => (
-                    <Route
-                      key={item.title}
-                      exact
-                      path={item.path}
-                      render={() => (<item.component siteId={this.state.siteId} />)}
-                    />
-                  ))
-                }
+            !(siteId && maps) ?
+              <CircularProgress className={classes.progress} color="secondary" /> :
+              <Switch>
+                <Route
+                  exact
+                  path={'/'}
+                  render={() => (<Analytics siteId={siteId} />)}
+                />
+                <Route
+                  exact
+                  path={'/map'}
+                  render={() => (<Map maps={maps} />)}
+                />
+                <Route
+                  exact
+                  path={'/correlation'}
+                  render={() => (<Correlation />)}
+                />
+                <Route
+                  exact
+                  path={'/prediction'}
+                  render={() => (<Prediction />)}
+                />
                 <Route component={Error404} />
               </Switch>
           }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -9,6 +8,7 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeviceDialog from './DeviceDialog';
+import { CircularProgress } from '@material-ui/core';
 
 const styles = theme => ({
   media: {
@@ -23,7 +23,7 @@ const styles = theme => ({
     transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.shortest,
     }),
-    [ theme.breakpoints.up('sm') ]: {
+    [theme.breakpoints.up('sm')]: {
       marginRight: -8,
     },
   },
@@ -44,28 +44,29 @@ class Cluster extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, image, e } = this.props;
+    const { isExpanded } = this.state;
 
     return (
       <div className={classes.card}>
-        <CardMedia
-          className={classes.media}
-          image={"/e" + this.props.e + ".jpeg"}
-          title={"E" + this.props.e}
-        />
+        {
+          !image ?
+            <CircularProgress className={classes.progress} color="secondary" /> :
+            <CardMedia
+              className={classes.media}
+              image={image}
+              title={'E' + e}
+            />
+        }
         <CardActions className={classes.actions} disableActionSpacing>
           <IconButton
-            className={classnames(classes.expand, {
-              [ classes.expandOpen ]: this.state.isExpanded,
-            })}
+            className={classnames(classes.expand, { [classes.expandOpen]: isExpanded })}
             onClick={this.handleExpandClick}
-            aria-expanded={this.state.isExpanded}
-            aria-label="Show more"
           >
             <ExpandMoreIcon />
           </IconButton>
         </CardActions>
-        <Collapse in={this.state.isExpanded} timeout="auto" unmountOnExit>
+        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <CardContent>
             <DeviceDialog />
           </CardContent>
@@ -74,9 +75,5 @@ class Cluster extends Component {
     )
   }
 }
-
-Cluster.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(Cluster);
