@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import RangePicker from '../RangePicker';
-import Card from './Card';
+import Card from '../Card';
 import { Grid, Paper, Typography, withStyles } from '@material-ui/core';
 import {
   MonetizationOn as MonetizationOnIcon,

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { DateRange } from 'react-date-range';
+import { addMonths } from 'date-fns'
 
 class RangePicker extends Component {
   state = {
@@ -33,7 +34,7 @@ class RangePicker extends Component {
         months={3}
         ranges={[this.state.rangePicker.selection]}
         direction="horizontal"
-        maxDate={new Date()}
+        maxDate={addMonths(new Date(), 2)}
       />
     )
   }
