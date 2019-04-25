@@ -24,7 +24,6 @@ import {
 import {
   Group as GroupIcon,
   Map as MapIcon,
-  Score as ScoreIcon,
   Timeline as TimelineIcon,
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
@@ -32,7 +31,6 @@ import {
 import s from './styles';
 import Analytics from '../Analytics';
 import Map from '../Map';
-import Correlation from '../Correlation';
 import Prediction from '../Prediction';
 import Error404 from '../Error404';
 import { CISCO_CMX, CISCO_PRESENCE } from '../../api/http';
@@ -136,12 +134,6 @@ class App extends Component {
                 <ListItemText primary={'Map'} />
               </ListItem>
             </NavLink>
-            <NavLink exact to={'/correlation'}>
-              <ListItem button>
-                <ListItemIcon><ScoreIcon /></ListItemIcon>
-                <ListItemText primary={'Correlation'} />
-              </ListItem>
-            </NavLink>
             <NavLink exact to={'/prediction'}>
               <ListItem button>
                 <ListItemIcon><TimelineIcon /></ListItemIcon>
@@ -168,13 +160,8 @@ class App extends Component {
                 />
                 <Route
                   exact
-                  path={'/correlation'}
-                  render={() => (<Correlation />)}
-                />
-                <Route
-                  exact
                   path={'/prediction'}
-                  render={() => (<Prediction />)}
+                  render={() => (<Prediction siteId={siteId} />)}
                 />
                 <Route component={Error404} />
               </Switch>

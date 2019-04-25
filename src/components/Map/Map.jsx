@@ -9,8 +9,6 @@ import DeviceSnackbar from './DeviceSnackbar';
 import { SnackbarProvider } from 'notistack';
 import Card from '@material-ui/core/Card/Card';
 import { CISCO_CMX } from '../../api/http';
-import { CircularProgress } from '@material-ui/core';
-
 
 const TabContainer = props => (
   <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -135,18 +133,18 @@ class Map extends Component {
           {chosenTab === 2 && <TabContainer><Cluster e={3} image={maps.e3} clients={clients.e3} /></TabContainer>}
         </Card>
         {/*TODO: Delete next rows*/}
-        {/*<SnackbarProvider*/}
-          {/*maxSnack={5}*/}
-          {/*anchorOrigin={{*/}
-            {/*vertical: 'bottom',*/}
-            {/*horizontal: 'right',*/}
-          {/*}}*/}
-          {/*style={{*/}
-            {/*opacity: 0.8,*/}
-          {/*}}*/}
-        {/*>*/}
-          {/*<DeviceSnackbar />*/}
-        {/*</SnackbarProvider>*/}
+        <SnackbarProvider
+          maxSnack={5}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          style={{
+            opacity: 0.8,
+          }}
+        >
+          <DeviceSnackbar />
+        </SnackbarProvider>
       </div>
     );
   }
