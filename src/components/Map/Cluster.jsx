@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -32,7 +32,6 @@ const styles = theme => ({
   },
 });
 
-
 class Cluster extends Component {
   state = {
     isExpanded: false,
@@ -44,7 +43,7 @@ class Cluster extends Component {
   };
 
   render() {
-    const { classes, image, e } = this.props;
+    const { classes, image, e, clients } = this.props;
     const { isExpanded } = this.state;
 
     return (
@@ -60,7 +59,7 @@ class Cluster extends Component {
         }
         <CardActions className={classes.actions} disableActionSpacing>
           <IconButton
-            className={classnames(classes.expand, { [classes.expandOpen]: isExpanded })}
+            className={classNames(classes.expand, { [classes.expandOpen]: isExpanded })}
             onClick={this.handleExpandClick}
           >
             <ExpandMoreIcon />
@@ -68,7 +67,7 @@ class Cluster extends Component {
         </CardActions>
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <CardContent>
-            <DeviceDialog />
+            <DeviceDialog clients={clients} />
           </CardContent>
         </Collapse>
       </div>

@@ -136,13 +136,13 @@ class App extends Component {
                 <ListItemText primary={'Map'} />
               </ListItem>
             </NavLink>
-            <NavLink exact to={'/'}>
+            <NavLink exact to={'/correlation'}>
               <ListItem button>
                 <ListItemIcon><ScoreIcon /></ListItemIcon>
                 <ListItemText primary={'Correlation'} />
               </ListItem>
             </NavLink>
-            <NavLink exact to={'/'}>
+            <NavLink exact to={'/prediction'}>
               <ListItem button>
                 <ListItemIcon><TimelineIcon /></ListItemIcon>
                 <ListItemText primary={'Prediction'} />
