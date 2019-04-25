@@ -235,8 +235,6 @@ class Prediction extends Component {
     const { classes } = this.props;
     const { cards, proximity, proximityDistribution, dwellTime, dwellTimeDistribution, repeatVisitors } = this.state;
 
-    console.log(this.state.range);
-
     return (
       <Grid
         container
