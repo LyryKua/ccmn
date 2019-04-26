@@ -1,5 +1,3 @@
-// TODO: add activeClassName for NavLink
-
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import {
@@ -40,6 +38,7 @@ class App extends Component {
     isOpen: false,
     siteId: null,
     maps: null,
+    macAddress: null,
   };
 
   handleDrawerOpen = () => this.setState({ isOpen: true });

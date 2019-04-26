@@ -12,17 +12,12 @@ class DeviceDialog extends React.Component {
     clickedClient: {},
   };
 
-  handleClickOpen = client => {
-    console.log({ client });
-    this.setState({
-      isOpen: true,
-      clickedClient: client,
-    });
-  };
+  handleClickOpen = client => this.setState({
+    isOpen: true,
+    clickedClient: client,
+  });
 
-  handleClose = () => {
-    this.setState({ isOpen: false });
-  };
+  handleClose = () => this.setState({ isOpen: false });
 
   render() {
     const { clients } = this.props;

@@ -9,6 +9,7 @@ import DeviceSnackbar from './DeviceSnackbar';
 import { SnackbarProvider } from 'notistack';
 import Card from '@material-ui/core/Card/Card';
 import { CISCO_CMX } from '../../api/http';
+import Search from '../Search/Search';
 
 const TabContainer = props => (
   <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -46,13 +47,6 @@ class Map extends Component {
   handleChange = (event, chosenTab) => {
     this.setState({ chosenTab: chosenTab });
   };
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { siteId } = this.props;
-    if (prevProps.siteId !== siteId) {
-      console.log('props changed');
-    }
-  }
 
   fetchMap(map) {
     return CISCO_CMX
@@ -111,6 +105,7 @@ class Map extends Component {
     return (
       <div className={classes.root}>
         <Card className={classes.card}>
+          <Search clients={clients} />
           <Tabs
             value={chosenTab}
             onChange={this.handleChange}
@@ -132,7 +127,6 @@ class Map extends Component {
           {chosenTab === 1 && <TabContainer><Cluster e={2} image={maps.e2} clients={clients.e2} /></TabContainer>}
           {chosenTab === 2 && <TabContainer><Cluster e={3} image={maps.e3} clients={clients.e3} /></TabContainer>}
         </Card>
-        {/*TODO: Delete next rows*/}
         <SnackbarProvider
           maxSnack={5}
           anchorOrigin={{

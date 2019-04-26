@@ -8,8 +8,8 @@ import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 
 class ClientInfo extends React.Component {
 
-  handleListItemClick = value => {
-    this.props.onClose(value);
+  handleClose = () => {
+    this.props.onClose();
   };
 
   render() {
@@ -22,7 +22,6 @@ class ClientInfo extends React.Component {
         fullWidth={true}
         maxWidth="md"
         {...other}
-        onClick={() => this.handleListItemClick()}
       >
         <DialogTitle id="dialog-title" disableTypography={true}>
           <Typography variant="h2">

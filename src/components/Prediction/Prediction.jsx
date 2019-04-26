@@ -1,6 +1,3 @@
-// TODO: The card with peakHour should show a day
-// TODO: Maybe siteId should be here. Delete it from App.jsx
-
 import React, { Component } from 'react';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
